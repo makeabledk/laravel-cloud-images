@@ -10,7 +10,7 @@ use Makeable\CloudImages\Tests\TestCase;
 class UploadTest extends TestCase
 {
     /** @test **/
-    function it_uploads_images()
+    public function it_uploads_images()
     {
         $image = CloudImage::upload(UploadedFile::fake()->image('original-filename.jpg'), 'test.jpg');
 
@@ -20,7 +20,7 @@ class UploadTest extends TestCase
     }
 
     /** @test **/
-    function it_hashes_filename_on_default()
+    public function it_hashes_filename_on_default()
     {
         $image = UploadedFile::fake()->image('original-filename.jpg');
         $hash = $image->hashName();
@@ -30,7 +30,7 @@ class UploadTest extends TestCase
     }
 
     /** @test **/
-    function it_throws_exception_on_failed_upload()
+    public function it_throws_exception_on_failed_upload()
     {
         $this->failHttpRequest();
 
