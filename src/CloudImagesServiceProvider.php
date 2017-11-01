@@ -11,9 +11,6 @@ class CloudImagesServiceProvider extends ServiceProvider
      */
     protected $defer = true;
 
-    /**
-     *
-     */
     public function register()
     {
         $this->app->register(\Superbalist\LaravelGoogleCloudStorage\GoogleCloudStorageServiceProvider::class);
@@ -28,7 +25,7 @@ class CloudImagesServiceProvider extends ServiceProvider
     public function provides()
     {
         return [
-            Client::class
+            Client::class,
         ];
     }
 }

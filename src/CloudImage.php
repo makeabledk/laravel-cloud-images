@@ -24,7 +24,7 @@ class CloudImage implements Arrayable
      */
     protected $options = [
         'sizing' => [],
-        'custom' => []
+        'custom' => [],
     ];
 
     /**

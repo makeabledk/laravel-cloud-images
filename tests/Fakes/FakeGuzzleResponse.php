@@ -24,7 +24,7 @@ class FakeGuzzleResponse
     public function getBody()
     {
         return json_encode([
-            'url' => 'http://localhost/somehash'
+            'url' => 'http://localhost/somehash',
         ]);
     }
 
