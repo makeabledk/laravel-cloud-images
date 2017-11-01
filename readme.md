@@ -30,7 +30,7 @@ On Laravel versions < 5.5, you must include the service provider in you `config/
 ]
 ```
 
-This package depends on [https://github.com/Superbalist/laravel-google-cloud-storage]() - please follow the installation guide for adding the necessary config to `filesystems.php`.
+This package depends on [https://github.com/Superbalist/laravel-google-cloud-storage](https://github.com/Superbalist/laravel-google-cloud-storage) - please follow the installation guide for adding the necessary config to `filesystems.php`.
 
 
 ## Example usages
