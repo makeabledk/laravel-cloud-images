@@ -7,7 +7,7 @@
         }
     },
     "require": {
-        "php": ">=5.6.0",
+        "php": ">=7.0.0",
         "illuminate/support": "^5.4",
         "illuminate/filesystem": "^5.4",
         "superbalist/laravel-google-cloud-storage": "^1.0",
