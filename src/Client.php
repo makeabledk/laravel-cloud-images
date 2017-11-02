@@ -38,26 +38,46 @@ class Client
     }
 
     /**
-     * @param \Illuminate\Http\File | \Illuminate\Http\UploadedFile $image
-     * @param null $filename
-     * @return CloudImage
-     * @throws \Exception
+     * @param \Illuminate\Http\File|\Illuminate\Http\UploadedFile|File $image
+     * @param null $path
+     * @return object
+     * @throws FailedUploadException
      */
-    public function upload(File $image, $filename = null)
+    public function upload(File $image, $path = null)
     {
-        $filename = $filename ?: $image->hashName();
+        $path = $path ?: $image->hashName();
+        $namespace = dirname($path) ?: '';
+        $filename = basename($path);
 
-        if (! $this->disk()->putFileAs('', $image, $filename)) {
-            throw new FailedUploadException('Failed to upload image');
+        if (! $this->disk()->putFileAs($namespace, $image, $filename)) {
+            throw new FailedUploadException('Failed to upload image to bucket');
         }
 
-        if (($response = $this->guzzle->request('GET', $this->endpoint.'?image='.$filename))->getStatusCode() !== 200) {
+        if (($response = $this->guzzle->request('GET', $this->endpoint.'?image='.$path))->getStatusCode() !== 200) {
             throw new FailedUploadException('Failed to parse file as image');
         }
 
         $url = str_replace('http://', 'https://', json_decode($response->getBody())->url);
 
-        return new CloudImage($url, $filename);
+        return (object) compact('url', 'path');
+    }
+
+    /**
+     * @param $path
+     * @return bool
+     * @throws FailedDeletionException
+     */
+    public function delete($path)
+    {
+        if (($response = $this->guzzle->request('DELETE', $this->endpoint.'?image='.$path))->getStatusCode() !== 200) {
+            throw new FailedDeletionException('Failed to stop serving image');
+        }
+
+        if (! $this->disk()->delete($path)) {
+            throw new FailedDeletionException('Failed to delete image from bucket');
+        }
+
+        return true;
     }
 
     /**

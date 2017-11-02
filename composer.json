@@ -11,7 +11,8 @@
         "illuminate/support": "^5.4",
         "illuminate/filesystem": "^5.4",
         "superbalist/laravel-google-cloud-storage": "^1.0",
-        "guzzlehttp/guzzle": "~6.0"
+        "guzzlehttp/guzzle": "~6.0",
+        "intervention/image": "^2.4"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.3",
@@ -29,7 +30,10 @@
         "laravel": {
             "providers": [
                 "Makeable\\CloudImages\\CloudImagesServiceProvider"
-            ]
+            ],
+            "aliases": {
+                "CloudImage": "Makeable\\CloudImages\\CloudImage"
+            }
         }
     },
     "scripts": {

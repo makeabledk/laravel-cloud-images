@@ -6,11 +6,6 @@ use Illuminate\Support\ServiceProvider;
 
 class CloudImagesServiceProvider extends ServiceProvider
 {
-    /**
-     * @var bool
-     */
-    protected $defer = true;
-
     public function register()
     {
         $this->app->register(\Superbalist\LaravelGoogleCloudStorage\GoogleCloudStorageServiceProvider::class);
