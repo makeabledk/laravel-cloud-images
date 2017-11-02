@@ -22,11 +22,11 @@ class Image extends Model
      * @var array
      */
     protected $casts = [
-        'meta' => 'array'
+        'meta' => 'array',
     ];
 
     /**
-     * Delete from bucket and image-service on deletion
+     * Delete from bucket and image-service on deletion.
      */
     public static function boot()
     {
@@ -47,7 +47,7 @@ class Image extends Model
         return static::create([
             'path' => $uploaded->path,
             'url' => $uploaded->url,
-            'meta' => \Intervention\Image\Image::make($image->getRealPath())->exif()
+            'meta' => \Intervention\Image\Image::make($image->getRealPath())->exif(),
         ]);
     }
 
