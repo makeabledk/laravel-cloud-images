@@ -3,8 +3,8 @@
 namespace Makeable\CloudImages\Tests\Feature;
 
 use Illuminate\Http\UploadedFile;
-use Makeable\CloudImages\ImageFactory;
 use Makeable\CloudImages\FailedUploadException;
+use Makeable\CloudImages\ImageFactory;
 use Makeable\CloudImages\Tests\TestCase;
 
 class UploadTest extends TestCase
