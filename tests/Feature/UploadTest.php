@@ -7,8 +7,8 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
 use Makeable\CloudImages\CloudImageFacade;
 use Makeable\CloudImages\Events\CloudImageUploaded;
-use Makeable\CloudImages\ImageFactory;
 use Makeable\CloudImages\Exceptions\FailedUploadException;
+use Makeable\CloudImages\ImageFactory;
 use Makeable\CloudImages\Tests\Fakes\FakeGuzzleClient;
 use Makeable\CloudImages\Tests\TestCase;
 

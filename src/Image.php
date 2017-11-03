@@ -44,7 +44,7 @@ class Image extends Model
             'url' => $uploaded->url,
             'meta' => config('cloud-images.read_exif')
                 ? app('image')->make($image->getRealPath())->exif()
-                : null
+                : null,
         ]);
     }
 
