@@ -17,11 +17,11 @@ class Image extends Model
      * @var array
      */
     protected $casts = [
-        'meta' => 'array'
+        'meta' => 'array',
     ];
 
     /**
-     * Delete from bucket and image-service on deletion
+     * Delete from bucket and image-service on deletion.
      */
     public static function boot()
     {
