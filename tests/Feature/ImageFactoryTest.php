@@ -5,7 +5,7 @@ namespace Makeable\CloudImages\Tests\Feature;
 use Makeable\CloudImages\ImageFactory;
 use Makeable\CloudImages\Tests\TestCase;
 
-class ImageTest extends TestCase
+class ImageFactoryTest extends TestCase
 {
     /** @test **/
     public function it_defaults_to_original()
@@ -48,7 +48,7 @@ class ImageTest extends TestCase
      */
     protected function image()
     {
-        return new ImageFactory($this->url(), 'image.jpg');
+        return new ImageFactory($this->url());
     }
 
     /**

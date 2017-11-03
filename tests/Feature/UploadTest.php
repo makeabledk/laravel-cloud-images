@@ -4,10 +4,12 @@ namespace Makeable\CloudImages\Tests\Feature;
 
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Storage;
 use Makeable\CloudImages\CloudImageFacade;
 use Makeable\CloudImages\Events\CloudImageUploaded;
 use Makeable\CloudImages\ImageFactory;
 use Makeable\CloudImages\Exceptions\FailedUploadException;
+use Makeable\CloudImages\Tests\Fakes\FakeGuzzleClient;
 use Makeable\CloudImages\Tests\TestCase;
 
 class UploadTest extends TestCase
@@ -15,8 +17,13 @@ class UploadTest extends TestCase
     /** @test **/
     public function it_uploads_images()
     {
+        $client = \Mockery::mock(new FakeGuzzleClient);
+        $this->app->instance(FakeGuzzleClient::class, $client);
+
         $uploaded = CloudImageFacade::upload(UploadedFile::fake()->image('original-filename.jpg'), 'test.jpg');
 
+        Storage::disk('gcs')->assertExists('test.jpg');
+        $client->shouldHaveReceived('request', ['GET', 'localhost?image=test.jpg']);
         $this->assertInstanceOf(CloudImageUploaded::class, $uploaded);
         $this->assertInstanceOf(ImageFactory::class, $uploaded->make());
         $this->assertEquals('https://localhost/somehash', $uploaded->url);

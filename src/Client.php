@@ -42,6 +42,26 @@ class Client
     }
 
     /**
+     * @param $path
+     * @return bool
+     * @throws FailedDeletionException
+     */
+    public function delete($path)
+    {
+        if (($response = $this->guzzle->request('DELETE', $this->endpoint.'?image='.$path))->getStatusCode() !== 200) {
+            throw new FailedDeletionException('Failed to stop serving image');
+        }
+
+        if (! $this->disk()->delete($path)) {
+            throw new FailedDeletionException('Failed to delete image from bucket');
+        }
+
+        return tap(new CloudImageDeleted($path), function ($deleted) {
+            event($deleted);
+        });
+    }
+
+    /**
      * @param \Illuminate\Http\File|\Illuminate\Http\UploadedFile|File $image
      * @param null $path
      * @return object
@@ -65,26 +85,6 @@ class Client
 
         return tap(new CloudImageUploaded($path, $url), function ($uploaded) {
             event($uploaded);
-        });
-    }
-
-    /**
-     * @param $path
-     * @return bool
-     * @throws FailedDeletionException
-     */
-    public function delete($path)
-    {
-        if (($response = $this->guzzle->request('DELETE', $this->endpoint.'?image='.$path))->getStatusCode() !== 200) {
-            throw new FailedDeletionException('Failed to stop serving image');
-        }
-
-        if (! $this->disk()->delete($path)) {
-            throw new FailedDeletionException('Failed to delete image from bucket');
-        }
-
-        return tap(new CloudImageDeleted($path), function ($deleted) {
-            event($deleted);
         });
     }
 
