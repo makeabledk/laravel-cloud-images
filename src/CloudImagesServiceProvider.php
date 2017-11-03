@@ -19,6 +19,14 @@ class CloudImagesServiceProvider extends ServiceProvider
         $this->app->singleton(Client::class, function ($app) {
             return new Client('gcs', 'https://'.config('filesystems.disks.gcs.bucket'), new \GuzzleHttp\Client);
         });
+
+        $this->mergeConfigFrom(
+            __DIR__.'/../config/cloud-images.php', 'cloud-images'
+        );
+
+        if (class_exists(\Intervention\Image\ImageServiceProvider::class)) {
+            $this->app->register(\Intervention\Image\ImageServiceProvider::class);
+        }
     }
 
     /**

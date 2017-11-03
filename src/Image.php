@@ -33,7 +33,7 @@ class Image extends Model
     /**
      * @param File|UploadedFile $image
      * @param null $path
-     * @return ImageFactory
+     * @return Image
      */
     public static function upload($image, $path = null)
     {
@@ -42,8 +42,29 @@ class Image extends Model
         return static::create([
             'path' => $uploaded->path,
             'url' => $uploaded->url,
-            'meta' => \Intervention\Image\Image::make($image->getRealPath())->exif()
+            'meta' => config('cloud-images.read_exif')
+                ? app('image')->make($image->getRealPath())->exif()
+                : null
         ]);
+    }
+
+    /**
+     * @param $class
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
+    public function attachables($class)
+    {
+        return $this->morphedByMany($class, 'attachable', 'image_attachments')
+            ->withPivot('order')
+            ->as('attachment');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function attachments()
+    {
+        return $this->hasMany(ImageAttachment::class);
     }
 
     /**

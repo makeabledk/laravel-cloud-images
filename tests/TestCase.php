@@ -36,6 +36,13 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase
         $app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
         $app->register(CloudImagesServiceProvider::class);
 
+        // Since migrations are optional, we need to add them manually
+        $app->afterResolving('migrator', function ($migrator) {
+            $migrator->path(__DIR__.'/../database/migrations/');
+            $migrator->path(__DIR__.'/migrations/');
+        });
+
+        // Register facade
         $loader = \Illuminate\Foundation\AliasLoader::getInstance();
         $loader->alias('CloudImageFacade', CloudImageFacade::class);
 

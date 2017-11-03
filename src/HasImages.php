@@ -2,17 +2,19 @@
 
 namespace Makeable\CloudImages;
 
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Rutorika\Sortable\MorphToSortedMany;
+use Rutorika\Sortable\MorphToSortedManyTrait;
 
 trait HasImages
 {
+    use MorphToSortedManyTrait;
+
     /**
-     * @return MorphToMany
+     * @return MorphToSortedMany
      */
     public function images()
     {
-        return $this->morphToMany(Image::class, 'attachable')
-            ->withPivot('tag', 'order')
-            ->orderBy('order');
+        return $this->morphToSortedMany(config('cloud-images.model'), 'attachable', 'order', 'image_attachments')
+            ->as('attachment');
     }
 }
