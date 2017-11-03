@@ -4,6 +4,7 @@ namespace Makeable\CloudImages\Tests;
 
 use Illuminate\Support\Facades\Storage;
 use Makeable\CloudImages\Client;
+use Makeable\CloudImages\CloudImageFacade;
 use Makeable\CloudImages\CloudImagesServiceProvider;
 use Makeable\CloudImages\Tests\Fakes\FakeGuzzleClient;
 
@@ -34,6 +35,9 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase
         $app->useEnvironmentPath(__DIR__.'/..');
         $app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
         $app->register(CloudImagesServiceProvider::class);
+
+        $loader = \Illuminate\Foundation\AliasLoader::getInstance();
+        $loader->alias('CloudImageFacade', CloudImageFacade::class);
 
         return $app;
     }

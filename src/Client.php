@@ -4,6 +4,10 @@ namespace Makeable\CloudImages;
 
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Storage;
+use Makeable\CloudImages\Events\CloudImageDeleted;
+use Makeable\CloudImages\Events\CloudImageUploaded;
+use Makeable\CloudImages\Exceptions\FailedDeletionException;
+use Makeable\CloudImages\Exceptions\FailedUploadException;
 use Symfony\Component\HttpFoundation\File\File;
 
 class Client
@@ -59,7 +63,9 @@ class Client
 
         $url = str_replace('http://', 'https://', json_decode($response->getBody())->url);
 
-        return (object) compact('url', 'path');
+        return tap(new CloudImageUploaded($path, $url), function ($uploaded) {
+            event($uploaded);
+        });
     }
 
     /**
@@ -77,7 +83,9 @@ class Client
             throw new FailedDeletionException('Failed to delete image from bucket');
         }
 
-        return true;
+        return tap(new CloudImageDeleted($path), function ($deleted) {
+            event($deleted);
+        });
     }
 
     /**

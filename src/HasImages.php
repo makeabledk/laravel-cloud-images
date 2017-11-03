@@ -11,6 +11,8 @@ trait HasImages
      */
     public function images()
     {
-        return $this->morphToMany(Image::class, 'attachment');
+        return $this->morphToMany(Image::class, 'attachable')
+            ->withPivot('tag', 'order')
+            ->orderBy('order');
     }
 }

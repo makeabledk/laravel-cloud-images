@@ -1,8 +1,10 @@
 <?php
 
+namespace Makeable\CloudImages;
+
 use Illuminate\Support\Facades\Facade;
 
-class CloudImage extends Facade
+class CloudImageFacade extends Facade
 {
     /**
      * Get the registered name of the component.

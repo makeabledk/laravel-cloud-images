@@ -32,7 +32,7 @@
                 "Makeable\\CloudImages\\CloudImagesServiceProvider"
             ],
             "aliases": {
-                "CloudImage": "Makeable\\CloudImages\\CloudImage"
+                "CloudImage": "Makeable\\CloudImages\\CloudImageFacade"
             }
         }
     },

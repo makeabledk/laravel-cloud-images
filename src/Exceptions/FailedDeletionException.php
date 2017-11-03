@@ -1,6 +1,6 @@
 <?php
 
-namespace Makeable\CloudImages;
+namespace Makeable\CloudImages\Exceptions;
 
 class FailedDeletionException extends \Exception
 {

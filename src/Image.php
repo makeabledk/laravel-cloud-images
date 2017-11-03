@@ -9,11 +9,6 @@ use Illuminate\Http\UploadedFile;
 class Image extends Model
 {
     /**
-     * @var bool
-     */
-    public $incrementing = false;
-
-    /**
      * @var array
      */
     protected $guarded = [];

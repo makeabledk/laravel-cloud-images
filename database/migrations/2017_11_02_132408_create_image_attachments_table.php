@@ -15,8 +15,9 @@ class CreateImageAttachmentsTable extends Migration
         Schema::create('image_attachments', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('image_id')->unsigned();
-            $table->morphs('attachment');
-            $table->integer('order')->unsigned();
+            $table->morphs('attachable');
+            $table->string('tag')->index();
+            $table->integer('order')->unsigned()->index();
             $table->timestamps();
 
             $table->foreign('image_id')->references('id')->on('images')->onDelete('cascade')->onUpdate('cascade');
