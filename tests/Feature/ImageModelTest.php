@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\File;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
 use Makeable\CloudImages\CloudImagesServiceProvider;
 use Makeable\CloudImages\Image;
@@ -78,14 +79,24 @@ class ImageModelTest extends TestCase
         $this->assertEquals(2, $image->attachables(Product::class)->count());
     }
 
+    /** @test **/
+    function it_deletes_cloud_image_on_model_deletion()
+    {
+        Storage::disk('gcs')->put('test.jpg', 'bar');
+
+        $this->image()->delete();
+
+        Storage::disk('gcs')->assertMissing('test.jpg');
+    }
+
     /**
      * @return Image
      */
     private function image()
     {
         return Image::create([
-            'path' => 'foo',
-            'url' => 'bar',
+            'path' => 'test.jpg',
+            'url' => 'foo',
         ]);
     }
 }

@@ -25,7 +25,8 @@ class Image extends Model
      */
     public static function boot()
     {
-        static::deleted(function (Image $image) {
+        parent::boot();
+        static::deleting(function (Image $image) {
             resolve(Client::class)->delete($image->path);
         });
     }
