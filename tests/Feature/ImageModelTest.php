@@ -17,7 +17,7 @@ class ImageModelTest extends TestCase
     use RefreshDatabase;
 
     /** @test **/
-    function it_publishes_migrations()
+    public function it_publishes_migrations()
     {
         $this->assertContains('database/migrations',
             array_first(ServiceProvider::pathsToPublish(CloudImagesServiceProvider::class))
@@ -25,7 +25,7 @@ class ImageModelTest extends TestCase
     }
 
     /** @test **/
-    function it_inserts_uploaded_images_to_database()
+    public function it_inserts_uploaded_images_to_database()
     {
         $image = Image::upload(UploadedFile::fake()->image('test.jpg'), 'test.jpg');
 
@@ -36,7 +36,7 @@ class ImageModelTest extends TestCase
     }
 
     /** @test **/
-    function it_can_store_exif_data()
+    public function it_can_store_exif_data()
     {
         Config::set('cloud-images.read_exif', true);
 
@@ -46,7 +46,7 @@ class ImageModelTest extends TestCase
     }
 
     /** @test **/
-    function it_attaches_to_other_models()
+    public function it_attaches_to_other_models()
     {
         $image = $this->image();
         $product = Product::create();
@@ -57,7 +57,7 @@ class ImageModelTest extends TestCase
     }
 
     /** @test **/
-    function it_sorts_attachments_by_order()
+    public function it_sorts_attachments_by_order()
     {
         list($product, $image1, $image2) = [Product::create(), $this->image(), $this->image()];
 
@@ -68,7 +68,7 @@ class ImageModelTest extends TestCase
     }
 
     /** @test **/
-    function it_finds_attachables_for_a_given_model()
+    public function it_finds_attachables_for_a_given_model()
     {
         list($image, $product1, $product2) = [$this->image(), Product::create(), Product::create()];
 
@@ -85,7 +85,7 @@ class ImageModelTest extends TestCase
     {
         return Image::create([
             'path' => 'foo',
-            'url' => 'bar'
+            'url' => 'bar',
         ]);
     }
 }
