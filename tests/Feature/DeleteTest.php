@@ -13,7 +13,7 @@ use Makeable\CloudImages\Tests\TestCase;
 class DeleteTest extends TestCase
 {
     /** @test **/
-    function it_deletes_images()
+    public function it_deletes_images()
     {
         $client = \Mockery::mock(new FakeGuzzleClient);
         $this->app->instance(FakeGuzzleClient::class, $client);
@@ -27,7 +27,7 @@ class DeleteTest extends TestCase
     }
 
     /** @test **/
-    function it_throws_exception_on_failed_bucket_deletion()
+    public function it_throws_exception_on_failed_bucket_deletion()
     {
         $this->expectException(FailedDeletionException::class);
 
@@ -37,7 +37,7 @@ class DeleteTest extends TestCase
     }
 
     /** @test **/
-    function it_throws_exception_on_failed_http_request()
+    public function it_throws_exception_on_failed_http_request()
     {
         $this->putFile('test.jpg');
         $this->failHttpRequest();
@@ -47,7 +47,7 @@ class DeleteTest extends TestCase
     }
 
     /** @test **/
-    function it_dispatches_event_on_deletion()
+    public function it_dispatches_event_on_deletion()
     {
         $this->putFile('test.jpg');
         Event::fake();
