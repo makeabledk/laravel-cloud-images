@@ -11,7 +11,7 @@ use Makeable\CloudImages\Image;
 use Makeable\CloudImages\Tests\Stubs\Product;
 use Makeable\CloudImages\Tests\TestCase;
 
-class ImageModelTest extends TestCase
+class ImageTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -106,7 +106,7 @@ class ImageModelTest extends TestCase
     }
 
     /** @test **/
-    function it_replaces_with_another_image()
+    public function it_replaces_with_another_image()
     {
         Storage::disk('gcs')->put('test.jpg', 'foo');
         $product = Product::create();
