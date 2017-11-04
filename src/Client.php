@@ -62,12 +62,12 @@ class Client
     }
 
     /**
-     * @param \Illuminate\Http\File|\Illuminate\Http\UploadedFile|File $image
+     * @param \Illuminate\Http\File|\Illuminate\Http\UploadedFile $image
      * @param null $path
      * @return object
      * @throws FailedUploadException
      */
-    public function upload(File $image, $path = null)
+    public function upload($image, $path = null)
     {
         $path = $path ?: $image->hashName();
         $namespace = dirname($path) ?: '';
