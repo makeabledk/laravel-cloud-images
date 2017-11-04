@@ -2,9 +2,12 @@
 
 namespace Makeable\CloudImages\Tests;
 
+use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Support\Facades\Storage;
 use Makeable\CloudImages\Client;
+use Makeable\CloudImages\CloudImageFacade;
 use Makeable\CloudImages\CloudImagesServiceProvider;
+use Makeable\CloudImages\Image;
 use Makeable\CloudImages\Tests\Fakes\FakeGuzzleClient;
 
 class TestCase extends \Illuminate\Foundation\Testing\TestCase
@@ -34,6 +37,22 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase
         $app->useEnvironmentPath(__DIR__.'/..');
         $app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
         $app->register(CloudImagesServiceProvider::class);
+
+        // Since migrations are optional, we need to add them manually
+        $app->afterResolving('migrator', function ($migrator) {
+            $migrator->path(__DIR__.'/migrations/');
+        });
+
+        // Register facade
+        $loader = \Illuminate\Foundation\AliasLoader::getInstance();
+        $loader->alias('CloudImageFacade', CloudImageFacade::class);
+
+        $app->make(Factory::class)->define(Image::class, function () {
+            return [
+                'path' => 'test.jpg',
+                'url' => 'foo',
+            ];
+        });
 
         return $app;
     }

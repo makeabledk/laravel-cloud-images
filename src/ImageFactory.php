@@ -3,21 +3,14 @@
 namespace Makeable\CloudImages;
 
 use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Http\File;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
 
-class CloudImage implements Arrayable
+class ImageFactory implements Arrayable
 {
     /**
      * @var
      */
     public $url;
-
-    /**
-     * @var
-     */
-    public $filename;
 
     /**
      * @var array
@@ -31,12 +24,10 @@ class CloudImage implements Arrayable
      * CloudImage constructor.
      *
      * @param $url
-     * @param $filename
      */
-    public function __construct($url, $filename)
+    public function __construct($url)
     {
         $this->url = $url;
-        $this->filename = $filename;
     }
 
     /**
@@ -48,16 +39,6 @@ class CloudImage implements Arrayable
     }
 
     /**
-     * @param File|UploadedFile $image
-     * @param string|null $filename
-     * @return CloudImage
-     */
-    public static function upload($image, $filename = null)
-    {
-        return resolve(\Makeable\CloudImages\Client::class)->upload($image, $filename);
-    }
-
-    /**
      * @return string
      */
     public function getUrl()
@@ -66,7 +47,9 @@ class CloudImage implements Arrayable
             $this->original();
         }
 
-        return $this->url.collect($this->options)->flatten()->implode('-');
+        return $this->url
+            ? rtrim($this->url, '=').'='.collect($this->options)->flatten()->implode('-')
+            : null;
     }
 
     /**
@@ -83,7 +66,7 @@ class CloudImage implements Arrayable
      * @param $width
      * @param $height
      * @param string $mode
-     * @return CloudImage
+     * @return ImageFactory
      */
     public function crop($width, $height, $mode = 'c')
     {
@@ -93,7 +76,7 @@ class CloudImage implements Arrayable
     /**
      * @param $width
      * @param $height
-     * @return CloudImage
+     * @return ImageFactory
      */
     public function cropCenter($width, $height)
     {
@@ -101,7 +84,7 @@ class CloudImage implements Arrayable
     }
 
     /**
-     * @return CloudImage
+     * @return ImageFactory
      */
     public function original()
     {
@@ -110,7 +93,7 @@ class CloudImage implements Arrayable
 
     /**
      * @param $max
-     * @return CloudImage
+     * @return ImageFactory
      */
     public function maxDimension($max)
     {
@@ -119,7 +102,7 @@ class CloudImage implements Arrayable
 
     /**
      * @param $param
-     * @return CloudImage
+     * @return ImageFactory
      */
     public function param($param)
     {
@@ -131,7 +114,7 @@ class CloudImage implements Arrayable
     /**
      * @param $width
      * @param $height
-     * @return CloudImage
+     * @return ImageFactory
      */
     public function scale($width, $height)
     {

@@ -5,17 +5,24 @@ namespace Makeable\CloudImages\Tests\Fakes;
 class FakeGuzzleResponse
 {
     /**
-     * @var
+     * @var FakeGuzzleClient
      */
-    public $status;
+    public $client;
+
+    /**
+     * @var array
+     */
+    public $request;
 
     /**
      * FakeGuzzleClient constructor.
-     * @param $status
+     * @param $client
+     * @param $request
      */
-    public function __construct($status)
+    public function __construct($client, $request)
     {
-        $this->status = $status;
+        $this->client = $client;
+        $this->request = $request;
     }
 
     /**
@@ -33,6 +40,6 @@ class FakeGuzzleResponse
      */
     public function getStatusCode()
     {
-        return $this->status;
+        return $this->client->status;
     }
 }

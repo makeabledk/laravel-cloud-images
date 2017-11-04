@@ -2,10 +2,10 @@
 
 namespace Makeable\CloudImages\Tests\Feature;
 
-use Makeable\CloudImages\CloudImage;
+use Makeable\CloudImages\ImageFactory;
 use Makeable\CloudImages\Tests\TestCase;
 
-class ImageTest extends TestCase
+class ImageFactoryTest extends TestCase
 {
     /** @test **/
     public function it_defaults_to_original()
@@ -43,20 +43,26 @@ class ImageTest extends TestCase
         $this->assertEquals($this->url('s0-fv'), $this->image()->param('fv')->getUrl());
     }
 
+    /** @test **/
+    public function it_returns_null_when_url_is_null()
+    {
+        $this->assertNull((new ImageFactory(null))->param('xyz')->getUrl());
+    }
+
     /**
-     * @return CloudImage
+     * @return ImageFactory
      */
     protected function image()
     {
-        return new CloudImage($this->url(), 'image.jpg');
+        return new ImageFactory($this->url());
     }
 
     /**
      * @param string $params
      * @return string
      */
-    protected function url($params = '')
+    protected function url($params = null)
     {
-        return 'https://localhost/somehash'.$params;
+        return 'https://localhost/somehash'.($params ? '='.$params : '');
     }
 }

@@ -9,7 +9,7 @@ This package provides a convenient to manage Google App Engine images through La
 
 It assumes you already have a configured App Engine imageserver and GCS Bucket.
 
-## Install
+## Installation
 
 You can install this package via composer:
 
@@ -17,49 +17,70 @@ You can install this package via composer:
 composer require makeabledk/laravel-cloud-images
 ```
 
-On Laravel versions < 5.5, you must include the service provider in you `config/app.php`:
+On Laravel versions < 5.5, you must include the service provider and (optionally) register the facade in you `config/app.php`:
 
 ```php
 'providers' => [
 ...
-    /*
-     * Package Service Providers...
-     */
-     
     \Makeable\CloudImages\CloudImagesServiceProvider::class,
+]
+``` 
+
+```php
+'aliases' => [
+...
+    'CloudImage' => \Makeable\CloudImages\CloudImageFacade::class,
 ]
 ```
 
-This package depends on [https://github.com/Superbalist/laravel-google-cloud-storage](https://github.com/Superbalist/laravel-google-cloud-storage) - please follow the installation guide for adding the necessary config to `filesystems.php`.
+Add a new `gcs` disk to your `filesystems.php` config
 
+```php
+'gcs' => [
+    'driver' => 'gcs',
+    'key_file' => env('GOOGLE_CLOUD_KEY_FILE', '/path/to/service-account.json'), 
+    'bucket' => env('GOOGLE_CLOUD_STORAGE_BUCKET', 'your-bucket'),
+],
+```
 
-## Example usages
+See [https://github.com/Superbalist/laravel-google-cloud-storage](https://github.com/Superbalist/laravel-google-cloud-storage) for more details about configuring `filesystems.php`.
+
+## Basic usage
 
 ### Upload an image
 
-Say that you are posting an `image` file to a Laravel controller. 
-
-You can easily fetch that and upload to your GCS bucket and create a image-url for it.
+Easily upload a `\Illuminate\Http\File` or `\Illuminate\Http\UploadedFile` to your GCS bucket and create an image-url for it.
 
 ```php
-<?php 
-
-class ImageController extends Controller
-{
-    public function store(Request $request) 
-    {
-        $image = CloudImage::upload($request->file('image'));
+$file = request()->file('image'); // assuming you uploaded a file through a form
+$uploaded = \CloudImage::upload($file); // filename will be a hash of the uploaded file
+$uploadedToPath = \CloudImage::upload($file, 'path/filename.jpg'); // optionally specify path and filename yourself
         
-        echo $image->url; // imageserver url, eg: http://lh3.googleusercontent.com/...
-        echo $image->filename; // filename in bucket, either the one you specified or a hash of the uploaded file
-    }
-}
+echo $uploaded->url; // imageserver url, eg: http://lh3.googleusercontent.com/...
+echo $uploaded->path; // path in bucket
 ```
 
-### Manipulating images on the fly
+### Delete an image
 
-Now that our image is served by Google, we can manipulate it on the fly
+Using the `delete` method will both delete the bucket file and destroy serving-image URL.
 
+```php
+\CloudImage::delete('path/filename.jpg');
+```
+
+Note that image-serving URL's can take up to 24 hours to clear from cache
+
+### The good stuff: Generating images on the fly
+
+Now that our image is served by Google, we can manipulate it on the fly. 
+
+All you have to do to start manipulating images, is an instance of `ImageFactory`:
+
+```php
+$image = \CloudImage::upload($file)->make();
+// or ...
+$image = new \Makeable\CloudImages\ImageFactory($url); 
+```
 
 #### Contain to max dimension
 
@@ -82,11 +103,137 @@ $image->scale(800, 500)->getUrl();
 
 #### Custom parameters (advanced)
 
-If the functionality you need is not provided by the package, you can specify your own
+If the functionality you need is not provided by the package, you can specify your own google-compatible parameters:
 
 ```php
 $image->original()->param('fv')->getUrl(); // This image will be flipped vertically
 ```
+
+While the [official Google Documentation](https://cloud.google.com/appengine/docs/standard/java/images/#using_if_lang_is_java_getservingurl_endif_if_lang_is_python_get_serving_url_endif) is poor to say the least, checkout this [Stackoverflow diskussion](https://stackoverflow.com/questions/25148567/list-of-all-the-app-engine-images-service-get-serving-url-uri-options) and try out the possibilities for yourself!
+
+## Extended usage (recommended)
+
+While uploading and serving images is fine, you will likely need to store the references in your database and attach them to some existing models.
+
+You will need to save both the URL as well as the bucket-path in case you ever want to delete them.
+
+This package provides an easy and opinionated way of doing that.
+
+### Extended installation
+
+#### 1. Install `rutorika/sortable` package which is used to track sort-order 
+
+```bash
+composer require rutorika/sortable
+```
+
+#### 2. Install `intervention/image` to read and store exif-data on your images (optional)
+
+```bash
+composer require intervention/image 
+```
+
+#### 3. Run migrations 
+```bash
+php artisan migrate
+```
+
+### Uploading images
+
+```php
+$image = \Makeable\CloudImages\Image::upload($file); // a persisted eloquent model 
+
+echo $image->path; // bucket path
+echo $image->url; // image-serving url
+echo $image->meta; // exif data 
+```
+
+### Model attachment with multiple images
+
+First, use the `HasImages` trait on your parent model.
+
+```php
+class Product extends Eloquent
+{
+    use Makeable\CloudImages\HasImages;
+}
+```
+
+Now you have an `images()` belongs-to-many relationship you can utilize as you normally would:
+
+```php
+Product::first()->images()->attach(Image::first());
+```
+
+#### Ordering attached images
+
+Images will be kept in the order you attach them. However, you are free to reorder them afterwards.
+
+```php
+$product = Product::first();
+$images = $product->images; // In this example we assume an collection of a few images
+
+$product->images()->moveBefore($images->get(2), $images->first());
+```
+
+Checkout the *Sortable many to many* section of the [rutorika/sortable](https://github.com/boxfrommars/rutorika-sortable) package.
+
+### Model attachment with a single image
+
+If your model is expected to have just one image, you may use the convenient `image()` helper provided by the `HasImages` trait.
+
+```php
+$image = Product::first()->image(); // Always returns an Image instance - even if none uploaded
+```
+
+On the `Image` instance you may use the `make()` method to generate the size you need.
+
+```php
+$url =  $image->make()->cropCenter(500, 400)->getUrl(); // returns NULL if no image attached
+```
+
+#### Example model structure
+
+```php
+class Product extends Eloquent
+{
+    use \Makeable\CloudImages\HasImages;
+    
+    public function getImageSquareAttribute()
+    {
+        return $this->image()->make()->cropCenter(500, 400)->getUrl();
+    }
+
+    public function getImageWideAttribute()
+    {
+        return $this->image()->make()->cropCenter(1200, 400)->getUrl();
+    }
+}
+```
+
+Now you can access and append them as needed through your model
+
+```php
+echo Product::first()->image_square;
+echo Product::first()->append('image_square', 'image_wide')->toArray(); // for array-casting
+```
+
+### Cleaning up old images
+
+#### Deleting an image
+
+When deleting an `Image` instance, the `CloudImage::delete()` method is automatically fired to delete the actual bucket file.
+
+#### Deleting images with no attachment
+
+Over time your `images` table may get bloated with images that no longer has model-attachments to them.
+
+Use the `cloud-images:cleanup` command to delete images (along with the actual bucket files) that are no longer used.
+
+```bash
+php artisan cloud-images:cleanup
+```
+
 
 ## Change log
 

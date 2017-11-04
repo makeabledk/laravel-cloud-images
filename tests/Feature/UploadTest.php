@@ -3,8 +3,13 @@
 namespace Makeable\CloudImages\Tests\Feature;
 
 use Illuminate\Http\UploadedFile;
-use Makeable\CloudImages\CloudImage;
-use Makeable\CloudImages\FailedUploadException;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Storage;
+use Makeable\CloudImages\CloudImageFacade;
+use Makeable\CloudImages\Events\CloudImageUploaded;
+use Makeable\CloudImages\Exceptions\FailedUploadException;
+use Makeable\CloudImages\ImageFactory;
+use Makeable\CloudImages\Tests\Fakes\FakeGuzzleClient;
 use Makeable\CloudImages\Tests\TestCase;
 
 class UploadTest extends TestCase
@@ -12,11 +17,17 @@ class UploadTest extends TestCase
     /** @test **/
     public function it_uploads_images()
     {
-        $image = CloudImage::upload(UploadedFile::fake()->image('original-filename.jpg'), 'test.jpg');
+        $client = \Mockery::mock(new FakeGuzzleClient);
+        $this->app->instance(FakeGuzzleClient::class, $client);
 
-        $this->assertInstanceOf(CloudImage::class, $image);
-        $this->assertEquals('https://localhost/somehash', $image->url);
-        $this->assertEquals('test.jpg', $image->filename);
+        $uploaded = CloudImageFacade::upload(UploadedFile::fake()->image('original-filename.jpg'), 'test.jpg');
+
+        Storage::disk('gcs')->assertExists('test.jpg');
+        $client->shouldHaveReceived('request', ['GET', 'localhost?image=test.jpg']);
+        $this->assertInstanceOf(CloudImageUploaded::class, $uploaded);
+        $this->assertInstanceOf(ImageFactory::class, $uploaded->make());
+        $this->assertEquals('https://localhost/somehash', $uploaded->url);
+        $this->assertEquals('test.jpg', $uploaded->path);
     }
 
     /** @test **/
@@ -25,8 +36,17 @@ class UploadTest extends TestCase
         $image = UploadedFile::fake()->image('original-filename.jpg');
         $hash = $image->hashName();
 
-        $image = CloudImage::upload($image);
-        $this->assertEquals($hash, $image->filename);
+        $uploaded = CloudImageFacade::upload($image);
+        $this->assertEquals($hash, $uploaded->path);
+    }
+
+    /** @test **/
+    public function it_accepts_a_file_path()
+    {
+        $uploaded = CloudImageFacade::upload(UploadedFile::fake()->image('test.jpg'), 'path/to/file.jpg');
+
+        Storage::disk('gcs')->assertExists('path/to/file.jpg');
+        $this->assertEquals('path/to/file.jpg', $uploaded->path);
     }
 
     /** @test **/
@@ -36,6 +56,14 @@ class UploadTest extends TestCase
 
         $this->expectException(FailedUploadException::class);
 
-        CloudImage::upload(UploadedFile::fake()->image('original-filename.jpg'), 'test.jpg');
+        CloudImageFacade::upload(UploadedFile::fake()->image('original-filename.jpg'), 'test.jpg');
+    }
+
+    /** @test **/
+    public function it_dispatches_event_on_upload()
+    {
+        Event::fake();
+        CloudImageFacade::upload(UploadedFile::fake()->image('original-filename.jpg'));
+        Event::assertDispatched(CloudImageUploaded::class);
     }
 }
