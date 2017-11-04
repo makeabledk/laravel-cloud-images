@@ -75,4 +75,16 @@ class Image extends Model
     {
         return new ImageFactory($this->url);
     }
+
+    /**
+     * @param Image $image
+     * @return Image
+     */
+    public function replaceWith(Image $image)
+    {
+        return tap($image, function ($image) {
+            ImageAttachment::where('image_id', $this->id)->update(['image_id' => $image->id]);
+            $this->delete();
+        });
+    }
 }

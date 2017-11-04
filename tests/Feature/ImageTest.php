@@ -105,6 +105,19 @@ class ImageModelTest extends TestCase
         $this->assertNull(Product::create()->image()->url);
     }
 
+    /** @test **/
+    function it_replaces_with_another_image()
+    {
+        Storage::disk('gcs')->put('test.jpg', 'foo');
+        $product = Product::create();
+        $product->images()->save($image1 = $this->image());
+
+        $image1->replaceWith($image2 = $this->image());
+
+        $this->assertTrue($product->image()->is($image2));
+        $this->assertNull(Image::find($image1->id));
+    }
+
     /**
      * @return Image
      */
