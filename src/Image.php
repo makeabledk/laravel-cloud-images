@@ -5,6 +5,7 @@ namespace Makeable\CloudImages;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\File;
 use Illuminate\Http\UploadedFile;
+use Makeable\CloudImages\Jobs\DeleteCloudImage;
 
 class Image extends Model
 {
@@ -27,7 +28,7 @@ class Image extends Model
     {
         parent::boot();
         static::deleting(function (Image $image) {
-            resolve(Client::class)->delete($image->path);
+            dispatch(new DeleteCloudImage($image->path));
         });
     }
 

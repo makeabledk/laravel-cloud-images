@@ -18,14 +18,6 @@ class ImageModelTest extends TestCase
     use RefreshDatabase;
 
     /** @test **/
-    function it_publishes_migrations()
-    {
-        $this->assertContains('database/migrations',
-            array_first(ServiceProvider::pathsToPublish(CloudImagesServiceProvider::class))
-        );
-    }
-
-    /** @test **/
     function it_inserts_uploaded_images_to_database()
     {
         $image = Image::upload(UploadedFile::fake()->image('test.jpg'), 'test.jpg');
@@ -109,9 +101,6 @@ class ImageModelTest extends TestCase
      */
     private function image()
     {
-        return Image::create([
-            'path' => 'test.jpg',
-            'url' => 'foo',
-        ]);
+        return factory(Image::class)->create();
     }
 }
