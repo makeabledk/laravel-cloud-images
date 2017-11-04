@@ -29,7 +29,7 @@ class ImageModelTest extends TestCase
     }
 
     /** @test **/
-    function it_deletes_cloud_image_on_model_deletion()
+    public function it_deletes_cloud_image_on_model_deletion()
     {
         Storage::disk('gcs')->put('test.jpg', 'bar');
 
@@ -39,7 +39,7 @@ class ImageModelTest extends TestCase
     }
 
     /** @test **/
-    function it_can_store_exif_data()
+    public function it_can_store_exif_data()
     {
         Config::set('cloud-images.read_exif', true);
 
@@ -49,7 +49,7 @@ class ImageModelTest extends TestCase
     }
 
     /** @test **/
-    function it_attaches_to_other_models()
+    public function it_attaches_to_other_models()
     {
         $image = $this->image();
         $product = Product::create();
@@ -60,7 +60,7 @@ class ImageModelTest extends TestCase
     }
 
     /** @test **/
-    function it_sorts_attachments_by_order()
+    public function it_sorts_attachments_by_order()
     {
         list($product, $image1, $image2) = [Product::create(), $this->image(), $this->image()];
 
@@ -71,7 +71,7 @@ class ImageModelTest extends TestCase
     }
 
     /** @test **/
-    function it_finds_attachables_for_a_given_model()
+    public function it_finds_attachables_for_a_given_model()
     {
         list($image, $product1, $product2) = [$this->image(), Product::create(), Product::create()];
 
@@ -82,7 +82,7 @@ class ImageModelTest extends TestCase
     }
 
     /** @test **/
-    function it_has_a_getter_for_as_single_image()
+    public function it_has_a_getter_for_as_single_image()
     {
         $product = Product::create();
         $product->images()->save($this->image());
@@ -91,7 +91,7 @@ class ImageModelTest extends TestCase
     }
 
     /** @test **/
-    function it_defaults_to_empty_image()
+    public function it_defaults_to_empty_image()
     {
         $this->assertNull(Product::create()->image()->url);
     }
