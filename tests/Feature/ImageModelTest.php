@@ -69,7 +69,7 @@ class ImageModelTest extends TestCase
     }
 
     /** @test **/
-    function it_can_rearrange_the_order()
+    public function it_can_rearrange_the_order()
     {
         $product = Product::create();
         $product->images()->sync([$this->image()->id, $this->image()->id]);

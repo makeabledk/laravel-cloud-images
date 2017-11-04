@@ -41,7 +41,7 @@ class UploadTest extends TestCase
     }
 
     /** @test **/
-    function it_accepts_a_file_path()
+    public function it_accepts_a_file_path()
     {
         $uploaded = CloudImageFacade::upload(UploadedFile::fake()->image('test.jpg'), 'path/to/file.jpg');
 
