@@ -14,7 +14,7 @@ class CleanupTest extends TestCase
     use RefreshDatabase;
 
     /** @test * */
-    function it_deletes_unused_images()
+    public function it_deletes_unused_images()
     {
         factory(Image::class)->create();
 
@@ -28,7 +28,7 @@ class CleanupTest extends TestCase
     }
 
     /** @test * */
-    function it_preserves_used_images()
+    public function it_preserves_used_images()
     {
         Product::create()->images()->save(factory(Image::class)->create());
 
