@@ -47,7 +47,9 @@ class ImageFactory implements Arrayable
             $this->original();
         }
 
-        return $this->url.collect($this->options)->flatten()->implode('-');
+        return $this->url
+            ? rtrim($this->url, '=').'='.collect($this->options)->flatten()->implode('-')
+            : null;
     }
 
     /**

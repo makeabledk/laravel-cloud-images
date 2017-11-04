@@ -18,7 +18,7 @@ class ImageModelTest extends TestCase
     use RefreshDatabase;
 
     /** @test **/
-    public function it_publishes_migrations()
+    function it_publishes_migrations()
     {
         $this->assertContains('database/migrations',
             array_first(ServiceProvider::pathsToPublish(CloudImagesServiceProvider::class))
@@ -26,7 +26,7 @@ class ImageModelTest extends TestCase
     }
 
     /** @test **/
-    public function it_inserts_uploaded_images_to_database()
+    function it_inserts_uploaded_images_to_database()
     {
         $image = Image::upload(UploadedFile::fake()->image('test.jpg'), 'test.jpg');
 
@@ -37,7 +37,17 @@ class ImageModelTest extends TestCase
     }
 
     /** @test **/
-    public function it_can_store_exif_data()
+    function it_deletes_cloud_image_on_model_deletion()
+    {
+        Storage::disk('gcs')->put('test.jpg', 'bar');
+
+        $this->image()->delete();
+
+        Storage::disk('gcs')->assertMissing('test.jpg');
+    }
+
+    /** @test **/
+    function it_can_store_exif_data()
     {
         Config::set('cloud-images.read_exif', true);
 
@@ -47,7 +57,7 @@ class ImageModelTest extends TestCase
     }
 
     /** @test **/
-    public function it_attaches_to_other_models()
+    function it_attaches_to_other_models()
     {
         $image = $this->image();
         $product = Product::create();
@@ -58,7 +68,7 @@ class ImageModelTest extends TestCase
     }
 
     /** @test **/
-    public function it_sorts_attachments_by_order()
+    function it_sorts_attachments_by_order()
     {
         list($product, $image1, $image2) = [Product::create(), $this->image(), $this->image()];
 
@@ -69,7 +79,7 @@ class ImageModelTest extends TestCase
     }
 
     /** @test **/
-    public function it_finds_attachables_for_a_given_model()
+    function it_finds_attachables_for_a_given_model()
     {
         list($image, $product1, $product2) = [$this->image(), Product::create(), Product::create()];
 
@@ -80,13 +90,18 @@ class ImageModelTest extends TestCase
     }
 
     /** @test **/
-    function it_deletes_cloud_image_on_model_deletion()
+    function it_has_a_getter_for_as_single_image()
     {
-        Storage::disk('gcs')->put('test.jpg', 'bar');
+        $product = Product::create();
+        $product->images()->save($this->image());
 
-        $this->image()->delete();
+        $this->assertEquals('foo', $product->image()->url);
+    }
 
-        Storage::disk('gcs')->assertMissing('test.jpg');
+    /** @test **/
+    function it_defaults_to_empty_image()
+    {
+        $this->assertNull(Product::create()->image()->url);
     }
 
     /**
