@@ -65,7 +65,18 @@ class ImageModelTest extends TestCase
         $product->images()->sync([$image2->id, $image1->id]);
 
         $this->assertTrue($product->images->first()->is($image2));
-        $this->assertEquals(2, $product->images->get(1)->attachment->order);
+        $this->assertEquals(2, $product->images->get(1)->pivot->order);
+    }
+
+    /** @test **/
+    function it_can_rearrange_the_order()
+    {
+        $product = Product::create();
+        $product->images()->sync([$this->image()->id, $this->image()->id]);
+
+        $product->images()->moveBefore($product->images->get(1), $product->images->first());
+
+        $this->assertEquals(2, $product->fresh()->images->first()->id);
     }
 
     /** @test **/

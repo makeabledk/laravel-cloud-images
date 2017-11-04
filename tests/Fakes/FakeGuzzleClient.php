@@ -18,8 +18,8 @@ class FakeGuzzleClient
         $this->status = $status;
     }
 
-    public function request()
+    public function request(...$request)
     {
-        return new FakeGuzzleResponse($this->status);
+        return new FakeGuzzleResponse($this, ...$request);
     }
 }

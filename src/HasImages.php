@@ -14,8 +14,7 @@ trait HasImages
      */
     public function images()
     {
-        return $this->morphToSortedMany(config('cloud-images.model'), 'attachable', 'order', 'image_attachments')
-            ->as('attachment');
+        return $this->morphToSortedMany(config('cloud-images.model'), 'attachable', 'order', 'image_attachments');
     }
 
     /**

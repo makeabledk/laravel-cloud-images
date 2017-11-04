@@ -12,6 +12,6 @@ return [
      *
      * Requires Intervention/Image package
      */
-    'read_exif' => false,
+    'read_exif' => null,
 
 ];

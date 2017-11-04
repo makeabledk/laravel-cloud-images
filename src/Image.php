@@ -57,8 +57,7 @@ class Image extends Model
     public function attachables($class)
     {
         return $this->morphedByMany($class, 'attachable', 'image_attachments')
-            ->withPivot('order')
-            ->as('attachment');
+            ->withPivot('order');
     }
 
     /**

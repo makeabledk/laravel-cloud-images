@@ -41,6 +41,15 @@ class UploadTest extends TestCase
     }
 
     /** @test **/
+    function it_accepts_a_file_path()
+    {
+        $uploaded = CloudImageFacade::upload(UploadedFile::fake()->image('test.jpg'), 'path/to/file.jpg');
+
+        Storage::disk('gcs')->assertExists('path/to/file.jpg');
+        $this->assertEquals('path/to/file.jpg', $uploaded->path);
+    }
+
+    /** @test **/
     public function it_throws_exception_on_failed_upload()
     {
         $this->failHttpRequest();

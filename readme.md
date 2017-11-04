@@ -33,14 +33,23 @@ On Laravel versions < 5.5, you must include the service provider and (optionally
 ]
 ```
 
-This package depends on [https://github.com/Superbalist/laravel-google-cloud-storage](https://github.com/Superbalist/laravel-google-cloud-storage) - please follow the installation guide for adding the necessary config to `filesystems.php`.
+Add a new `gcs` disk to your `filesystems.php` config
 
+```php
+'gcs' => [
+    'driver' => 'gcs',
+    'key_file' => env('GOOGLE_CLOUD_KEY_FILE', '/path/to/service-account.json'), 
+    'bucket' => env('GOOGLE_CLOUD_STORAGE_BUCKET', 'your-bucket'),
+],
+```
+
+See [https://github.com/Superbalist/laravel-google-cloud-storage](https://github.com/Superbalist/laravel-google-cloud-storage) for more details about configuring `filesystems.php`.
 
 ## Basic usage
 
 ### Upload an image
 
-Easily upload a `\Illuminate\Http\File` or `\Illuminate\Http\UploadedFile` to your GCS bucket and create a image-url for it.
+Easily upload a `\Illuminate\Http\File` or `\Illuminate\Http\UploadedFile` to your GCS bucket and create an image-url for it.
 
 ```php
 $file = request()->file('image'); // assuming you uploaded a file through a form
@@ -61,9 +70,9 @@ Using the `delete` method will both delete the bucket file and destroy serving-i
 
 Note that image-serving URL's can take up to 24 hours to clear from cache
 
-### Generating images on the fly
+### The good stuff: Generating images on the fly
 
-Now that our image is served by Google, we can manipulate it on the fly. Yay!
+Now that our image is served by Google, we can manipulate it on the fly. 
 
 All you have to do to start manipulating images, is an instance of `ImageFactory`:
 
@@ -94,34 +103,39 @@ $image->scale(800, 500)->getUrl();
 
 #### Custom parameters (advanced)
 
-If the functionality you need is not provided by the package, you can specify your own
+If the functionality you need is not provided by the package, you can specify your own google-compatible parameters:
 
 ```php
 $image->original()->param('fv')->getUrl(); // This image will be flipped vertically
 ```
 
-While the official Google Documentation is quite poor, checkout this [Stackoverflow diskussion](https://stackoverflow.com/questions/25148567/list-of-all-the-app-engine-images-service-get-serving-url-uri-options) and try the possibilities out for yourself!
+While the [official Google Documentation](https://cloud.google.com/appengine/docs/standard/java/images/#using_if_lang_is_java_getservingurl_endif_if_lang_is_python_get_serving_url_endif) is poor to say the least, checkout this [Stackoverflow diskussion](https://stackoverflow.com/questions/25148567/list-of-all-the-app-engine-images-service-get-serving-url-uri-options) and try out the possibilities for yourself!
 
 ## Extended usage (recommended)
 
-While uploading and serving images is fine, you will likely need to store the references in your database as well, and attach them to some existing models.
+While uploading and serving images is fine, you will likely need to store the references in your database and attach them to some existing models.
 
-You need to both save the URL as well as the bucket-path (if you ever want to delete them).
+You will need to save both the URL as well as the bucket-path in case you ever want to delete them.
 
-This package provides an easy (and opinionated) way of doing that.
+This package provides an easy and opinionated way of doing that.
 
 ### Extended installation
 
-Install `rutorika/sortable` package which is used to track sort-order 
+#### 1. Install `rutorika/sortable` package which is used to track sort-order 
 
 ```bash
 composer require rutorika/sortable
 ```
 
-Install `intervention/image` to read and store exif-data on your images
+#### 2. Install `intervention/image` to read and store exif-data on your images (optional)
 
 ```bash
 composer require intervention/image 
+```
+
+#### 3. Run migrations 
+```bash
+php artisan migrate
 ```
 
 ### Uploading images
@@ -145,7 +159,7 @@ class Product extends Eloquent
 }
 ```
 
-Now you have an `images` belongsToMany-relationship you can utilize.
+Now you have an `images()` belongs-to-many relationship you can utilize as you normally would:
 
 ```php
 Product::first()->images()->attach(Image::first());
@@ -153,7 +167,7 @@ Product::first()->images()->attach(Image::first());
 
 #### Ordering attached images
 
-Attached images automatically adds in the order you attach them. However, you are free to reorder them afterwards.
+Images will be kept in the order you attach them. However, you are free to reorder them afterwards.
 
 ```php
 $product = Product::first();
@@ -175,12 +189,10 @@ $image = Product::first()->image(); // Always returns an Image instance - even i
 On the `Image` instance you may use the `make()` method to generate the size you need.
 
 ```php
-$url =  $image->make()->cropCenter(500, 400)->getUrl(); // If no image attached, getUrl() will return NULL
+$url =  $image->make()->cropCenter(500, 400)->getUrl(); // returns NULL if no image attached
 ```
 
-#### Example usage
-
-Here is some inspiration for a powerful model structure
+#### Example model structure
 
 ```php
 class Product extends Eloquent
