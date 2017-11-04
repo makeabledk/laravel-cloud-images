@@ -28,7 +28,7 @@ class Cleanup extends Command
      */
     public function handle()
     {
-        $images = Image::doesntHave('attachments')->get()->each(function(Image $image) {
+        $images = Image::doesntHave('attachments')->get()->each(function (Image $image) {
             $image->delete();
         });
 

@@ -7,8 +7,6 @@ use Illuminate\Http\File;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\ServiceProvider;
-use Makeable\CloudImages\CloudImagesServiceProvider;
 use Makeable\CloudImages\Image;
 use Makeable\CloudImages\Tests\Stubs\Product;
 use Makeable\CloudImages\Tests\TestCase;
@@ -18,7 +16,7 @@ class ImageModelTest extends TestCase
     use RefreshDatabase;
 
     /** @test **/
-    function it_inserts_uploaded_images_to_database()
+    public function it_inserts_uploaded_images_to_database()
     {
         $image = Image::upload(UploadedFile::fake()->image('test.jpg'), 'test.jpg');
 
