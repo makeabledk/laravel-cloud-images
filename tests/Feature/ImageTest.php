@@ -119,7 +119,7 @@ class ImageTest extends TestCase
     }
 
     /** @test **/
-    function it_replaces_with_image_even_if_currently_has_none()
+    public function it_replaces_with_image_even_if_currently_has_none()
     {
         Storage::disk('gcs')->put('test.jpg', 'foo');
         $product = Product::create();
