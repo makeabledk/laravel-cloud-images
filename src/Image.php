@@ -24,7 +24,12 @@ class Image extends Model
     /**
      * @var null
      */
-    protected $reservedFor = null;
+    protected $reservedForAttachable = null;
+
+    /**
+     * @var null
+     */
+    protected $reservedForTag = null;
 
     /**
      * Delete from bucket and image-service on deletion.
@@ -62,7 +67,7 @@ class Image extends Model
     public function attachables($class)
     {
         return $this->morphedByMany($class, 'attachable', 'image_attachments')
-            ->withPivot('order');
+            ->withPivot('tag', 'order');
     }
 
     /**
@@ -91,19 +96,21 @@ class Image extends Model
             if ($this->exists) {
                 ImageAttachment::where('image_id', $this->id)->update(['image_id' => $image->id]);
                 $this->delete();
-            } elseif ($this->reservedFor) {
-                $this->reservedFor->images()->save($image);
+            } elseif ($this->reservedForAttachable) {
+                $this->reservedForAttachable->images()->attach($image->id, ['tag' => $this->reservedForTag]);
             }
         });
     }
 
     /**
-     * @param $model
+     * @param $attachable
+     * @param null $tag
      * @return $this
      */
-    public function reservedFor($model)
+    public function reserveFor($attachable, $tag = null)
     {
-        $this->reservedFor = $model;
+        $this->reservedForAttachable = $attachable;
+        $this->reservedForTag = $tag;
 
         return $this;
     }

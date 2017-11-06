@@ -35,13 +35,13 @@ class ImageFactory implements Arrayable
      */
     public function __toString()
     {
-        return $this->getUrl();
+        return $this->get();
     }
 
     /**
      * @return string
      */
-    public function getUrl()
+    public function get()
     {
         if (count($this->options['sizing']) === 0) {
             $this->original();
@@ -57,7 +57,7 @@ class ImageFactory implements Arrayable
      */
     public function toArray()
     {
-        return $this->getUrl();
+        return $this->get();
     }
 
     // _________________________________________________________________________________________________________________

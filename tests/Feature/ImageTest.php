@@ -29,9 +29,11 @@ class ImageTest extends TestCase
     /** @test **/
     public function it_deletes_cloud_image_on_model_deletion()
     {
-        Storage::disk('gcs')->put('test.jpg', 'bar');
+        $image = $this->image();
 
-        $this->image()->delete();
+        Storage::disk('gcs')->assertExists('test.jpg');
+
+        $image->delete();
 
         Storage::disk('gcs')->assertMissing('test.jpg');
     }
@@ -44,95 +46,5 @@ class ImageTest extends TestCase
         $image = Image::upload(new File(__DIR__.'/../image.jpg'), 'test.jpg');
 
         $this->assertEquals(1000, $image->meta['COMPUTED']['Height']);
-    }
-
-    /** @test **/
-    public function it_attaches_to_other_models()
-    {
-        $image = $this->image();
-        $product = Product::create();
-
-        $product->images()->attach($image);
-
-        $this->assertTrue($product->images->first()->is($image));
-    }
-
-    /** @test **/
-    public function it_sorts_attachments_by_order()
-    {
-        list($product, $image1, $image2) = [Product::create(), $this->image(), $this->image()];
-
-        $product->images()->sync([$image2->id, $image1->id]);
-
-        $this->assertTrue($product->images->first()->is($image2));
-        $this->assertEquals(2, $product->images->get(1)->pivot->order);
-    }
-
-    /** @test **/
-    public function it_can_rearrange_the_order()
-    {
-        $product = Product::create();
-        $product->images()->sync([$this->image()->id, $this->image()->id]);
-
-        $product->images()->moveBefore($product->images->get(1), $product->images->first());
-
-        $this->assertEquals(2, $product->fresh()->images->first()->id);
-    }
-
-    /** @test **/
-    public function it_finds_attachables_for_a_given_model()
-    {
-        list($image, $product1, $product2) = [$this->image(), Product::create(), Product::create()];
-
-        $product1->images()->save($image);
-        $product2->images()->save($image);
-
-        $this->assertEquals(2, $image->attachables(Product::class)->count());
-    }
-
-    /** @test **/
-    public function it_has_a_getter_for_as_single_image()
-    {
-        $product = Product::create();
-        $product->images()->save($this->image());
-
-        $this->assertEquals('foo', $product->image()->url);
-    }
-
-    /** @test **/
-    public function it_defaults_to_empty_image()
-    {
-        $this->assertNull(Product::create()->image()->url);
-    }
-
-    /** @test **/
-    public function it_replaces_with_another_image()
-    {
-        Storage::disk('gcs')->put('test.jpg', 'foo');
-        $product = Product::create();
-        $product->images()->save($image1 = $this->image());
-
-        $image1->replaceWith($image2 = $this->image());
-
-        $this->assertTrue($product->image()->is($image2));
-        $this->assertNull(Image::find($image1->id));
-    }
-
-    /** @test **/
-    public function it_replaces_with_image_even_if_currently_has_none()
-    {
-        Storage::disk('gcs')->put('test.jpg', 'foo');
-        $product = Product::create();
-        $product->image()->replaceWith($image = $this->image());
-
-        $this->assertTrue($product->fresh()->image()->is($image));
-    }
-
-    /**
-     * @return Image
-     */
-    private function image()
-    {
-        return factory(Image::class)->create();
     }
 }

@@ -2,6 +2,9 @@
 
 All notable changes will be documented in this file
 
+## v0.3.0 - 2017-11-06
+- Add `tag` support for 'single image' usage
+
 ## v0.2.1 - 2017-11-06
 - Feature: Support image-replacement even when currently none
 

@@ -16,6 +16,7 @@ class CreateImageAttachmentsTable extends Migration
             $table->increments('id');
             $table->integer('image_id')->unsigned();
             $table->morphs('attachable');
+            $table->string('tag')->nullable()->index();
             $table->integer('order')->unsigned()->index();
             $table->timestamps();
 

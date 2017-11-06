@@ -16,9 +16,7 @@ class CleanupTest extends TestCase
     /** @test * */
     public function it_deletes_unused_images()
     {
-        factory(Image::class)->create();
-
-        Storage::disk('gcs')->put('test.jpg', 'foo');
+        $this->image();
 
         $this->assertEquals(1, Image::count());
 
@@ -30,7 +28,7 @@ class CleanupTest extends TestCase
     /** @test * */
     public function it_preserves_used_images()
     {
-        Product::create()->images()->save(factory(Image::class)->create());
+        Product::create()->images()->save($this->image());
 
         $this->assertEquals(1, Image::count());
 

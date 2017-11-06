@@ -85,20 +85,20 @@ $image = new \Makeable\CloudImages\ImageFactory($url);
 #### Contain to max dimension
 
 ```php
-$image->maxDimension(800)->getUrl();
+$image->maxDimension(800)->get();
 ```
 
 #### Crop to dimensions
 
 ```php
-$image->crop(800, 500)->getUrl(); // Crop from top
-$image->cropCenter(800, 500)->getUrl(); // Crop from center
+$image->crop(800, 500)->get(); // Crop from top
+$image->cropCenter(800, 500)->get(); // Crop from center
 ```
 
 #### Stretch to dimensions
 
 ```php
-$image->scale(800, 500)->getUrl(); 
+$image->scale(800, 500)->get(); 
 ```
 
 #### Custom parameters (advanced)
@@ -106,7 +106,7 @@ $image->scale(800, 500)->getUrl();
 If the functionality you need is not provided by the package, you can specify your own google-compatible parameters:
 
 ```php
-$image->original()->param('fv')->getUrl(); // This image will be flipped vertically
+$image->original()->param('fv')->get(); // This image will be flipped vertically
 ```
 
 While the [official Google Documentation](https://cloud.google.com/appengine/docs/standard/java/images/#using_if_lang_is_java_getservingurl_endif_if_lang_is_python_get_serving_url_endif) is poor to say the least, checkout this [Stackoverflow diskussion](https://stackoverflow.com/questions/25148567/list-of-all-the-app-engine-images-service-get-serving-url-uri-options) and try out the possibilities for yourself!
@@ -180,7 +180,7 @@ Checkout the *Sortable many to many* section of the [rutorika/sortable](https://
 
 ### Model attachment with a single image
 
-If your model is expected to have just one image, you may use the convenient `image()` helper provided by the `HasImages` trait.
+If your model is expected to have just one image, you may use the convenient `image()` helper provided by the same `HasImages` trait.
 
 ```php
 $image = Product::first()->image(); // Always returns an Image instance - even if none uploaded
@@ -189,11 +189,34 @@ $image = Product::first()->image(); // Always returns an Image instance - even i
 On the `Image` instance you may use the `make()` method to generate the size you need.
 
 ```php
-$url =  $image->make()->cropCenter(500, 400)->getUrl(); // returns NULL if no image attached
+$url =  $image->make()->cropCenter(500, 400)->get(); // returns NULL if no image attached
 ```
 
-#### Example model structure
+#### Differentiating between image types
 
+Sometimes you may wish to have different types of 'single images' on a model. Use the optional `tag` parameter to achieve this behavior.
+
+```php
+Product::first()->image('featured');
+Product::first()->image('cover');
+```
+Note: Tagging is only intended through the `image($tag)` helper as the `rutorika/sortable` package does not differentiate between tags when applying `order`. 
+
+#### Replacing images
+
+Use the `replaceWith` method on the `Image` model to swap any `Image` with another while preserving attachments.
+
+This is especially useful in combination with the `image()` helper:
+
+```php
+Product::first()->image('featured')->replaceWith(Image::upload($file));
+```
+- If the product did not have a 'featured' image, it would simple attach the new one
+- If the product did already have 'featured' image it would get replaced, and the old one deleted
+
+#### Example usage
+
+In this example we would like two different images size available on our `Product` model.
 ```php
 class Product extends Eloquent
 {
@@ -201,21 +224,43 @@ class Product extends Eloquent
     
     public function getImageSquareAttribute()
     {
-        return $this->image()->make()->cropCenter(500, 400)->getUrl();
+        return $this->image()->make()->cropCenter(500, 400)->get();
     }
 
     public function getImageWideAttribute()
     {
-        return $this->image()->make()->cropCenter(1200, 400)->getUrl();
+        return $this->image()->make()->cropCenter(1200, 400)->get();
+    }
+    
+    public function setImageAttribute($file)
+    {
+        return $this->image()->replaceWith(Image::upload($file));
     }
 }
 ```
 
-Now you can access and append them as needed through your model
-
+Now you can access the sizes simply by referencing them as properties.
 ```php
 echo Product::first()->image_square;
-echo Product::first()->append('image_square', 'image_wide')->toArray(); // for array-casting
+echo Product::first()->image_wide;
+```
+
+You can replace the image simply by setting the new `UploadedFile` 
+```php
+Product::first()->image = request()->file('image');
+```
+
+In your controller it would work seamlessly when validating and `filling` the model (Laravel 5.5 example).
+```php
+public function store(Request $request)
+{
+    return Product::create(
+        $request->validate([
+            'image' => 'required|image',
+            // ... some other fields
+        ])
+    );
+}
 ```
 
 ### Cleaning up old images

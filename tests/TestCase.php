@@ -47,13 +47,6 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase
         $loader = \Illuminate\Foundation\AliasLoader::getInstance();
         $loader->alias('CloudImageFacade', CloudImageFacade::class);
 
-        $app->make(Factory::class)->define(Image::class, function () {
-            return [
-                'path' => 'test.jpg',
-                'url' => 'foo',
-            ];
-        });
-
         return $app;
     }
 
@@ -78,5 +71,19 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase
         app()->singleton(FakeGuzzleClient::class, function () use ($status) {
             return new FakeGuzzleClient($status);
         });
+    }
+
+    /**
+     * @param string $path
+     * @return Image
+     */
+    protected function image($path = 'test.jpg')
+    {
+        Storage::disk('gcs')->put($path, 'foo');
+
+        return Image::create([
+            'path' => $path,
+            'url' => 'foo',
+        ]);
     }
 }
