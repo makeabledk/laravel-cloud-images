@@ -22,6 +22,11 @@ class Image extends Model
     ];
 
     /**
+     * @var null
+     */
+    protected $reservedFor = null;
+
+    /**
      * Delete from bucket and image-service on deletion.
      */
     public static function boot()
@@ -83,8 +88,24 @@ class Image extends Model
     public function replaceWith(Image $image)
     {
         return tap($image, function ($image) {
-            ImageAttachment::where('image_id', $this->id)->update(['image_id' => $image->id]);
-            $this->delete();
+            if($this->exists) {
+                ImageAttachment::where('image_id', $this->id)->update(['image_id' => $image->id]);
+                $this->delete();
+            }
+            elseif ($this->reservedFor) {
+                $this->reservedFor->images()->save($image);
+            }
         });
+    }
+
+    /**
+     * @param $model
+     * @return $this
+     */
+    public function reservedFor($model)
+    {
+        $this->reservedFor = $model;
+
+        return $this;
     }
 }

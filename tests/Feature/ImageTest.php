@@ -118,6 +118,16 @@ class ImageTest extends TestCase
         $this->assertNull(Image::find($image1->id));
     }
 
+    /** @test **/
+    function it_replaces_with_image_even_if_currently_has_none()
+    {
+        Storage::disk('gcs')->put('test.jpg', 'foo');
+        $product = Product::create();
+        $product->image()->replaceWith($image = $this->image());
+
+        $this->assertTrue($product->fresh()->image()->is($image));
+    }
+
     /**
      * @return Image
      */

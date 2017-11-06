@@ -22,6 +22,6 @@ trait HasImages
      */
     public function image()
     {
-        return $this->images->first() ?: new Image;
+        return $this->images->first() ?: (new Image)->reservedFor($this);
     }
 }
