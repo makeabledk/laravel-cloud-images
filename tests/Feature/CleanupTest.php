@@ -4,7 +4,6 @@ namespace Makeable\CloudImages\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Storage;
 use Makeable\CloudImages\Image;
 use Makeable\CloudImages\Tests\Stubs\Product;
 use Makeable\CloudImages\Tests\TestCase;

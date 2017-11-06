@@ -3,10 +3,6 @@
 namespace Makeable\CloudImages\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\File;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Storage;
 use Makeable\CloudImages\Image;
 use Makeable\CloudImages\Tests\Stubs\Product;
 use Makeable\CloudImages\Tests\TestCase;
@@ -43,7 +39,7 @@ class HasSingleImageTest extends TestCase
     }
 
     /** @test **/
-    function it_replaces_with_image_even_if_currently_has_none()
+    public function it_replaces_with_image_even_if_currently_has_none()
     {
         $product = Product::create();
         $product->image()->replaceWith($image = $this->image());
@@ -52,7 +48,7 @@ class HasSingleImageTest extends TestCase
     }
 
     /** @test **/
-    function it_can_fetch_an_image_of_a_given_tag()
+    public function it_can_fetch_an_image_of_a_given_tag()
     {
         $product = Product::create();
         $product->images()->attach(($feature = $this->image())->id, ['tag' => 'feature']);

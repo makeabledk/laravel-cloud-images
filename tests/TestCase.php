@@ -2,7 +2,6 @@
 
 namespace Makeable\CloudImages\Tests;
 
-use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Support\Facades\Storage;
 use Makeable\CloudImages\Client;
 use Makeable\CloudImages\CloudImageFacade;
