@@ -8,7 +8,6 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use Makeable\CloudImages\Image;
-use Makeable\CloudImages\Tests\Stubs\Product;
 use Makeable\CloudImages\Tests\TestCase;
 
 class ImageTest extends TestCase

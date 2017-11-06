@@ -3,11 +3,6 @@
 namespace Makeable\CloudImages\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\File;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Storage;
-use Makeable\CloudImages\Image;
 use Makeable\CloudImages\Tests\Stubs\Product;
 use Makeable\CloudImages\Tests\TestCase;
 
