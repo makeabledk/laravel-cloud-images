@@ -85,14 +85,13 @@ class Image extends Model
      * @param Image $image
      * @return Image
      */
-    public function replaceWith(Image $image)
+    public function replaceWith(self $image)
     {
         return tap($image, function ($image) {
-            if($this->exists) {
+            if ($this->exists) {
                 ImageAttachment::where('image_id', $this->id)->update(['image_id' => $image->id]);
                 $this->delete();
-            }
-            elseif ($this->reservedFor) {
+            } elseif ($this->reservedFor) {
                 $this->reservedFor->images()->save($image);
             }
         });
