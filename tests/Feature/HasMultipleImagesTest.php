@@ -4,6 +4,7 @@ namespace Makeable\CloudImages\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Makeable\CloudImages\Tests\Stubs\Product;
+use Makeable\CloudImages\Tests\Stubs\ProductImage;
 use Makeable\CloudImages\Tests\TestCase;
 
 class HasMultipleImagesTest extends TestCase
@@ -52,5 +53,19 @@ class HasMultipleImagesTest extends TestCase
         $product2->images()->save($image);
 
         $this->assertEquals(2, $image->attachables(Product::class)->count());
+    }
+
+    /** @test **/
+    public function it_uses_the_specified_image_class_property_for_the_relationship()
+    {
+        $product = new class extends Product {
+            protected $useImageModel = ProductImage::class;
+        };
+
+        list($product, $image) = [$product::create(), $this->image()];
+
+        $product->images()->save($image);
+
+        $this->assertInstanceOf(ProductImage::class, $product->images->first());
     }
 }

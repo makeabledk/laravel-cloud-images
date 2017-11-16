@@ -10,6 +10,11 @@ use Makeable\CloudImages\Jobs\DeleteCloudImage;
 class Image extends Model
 {
     /**
+     * @var string
+     */
+    protected $table = 'images';
+
+    /**
      * @var array
      */
     protected $guarded = [];

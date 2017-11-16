@@ -38,6 +38,7 @@ Add a new `gcs` disk to your `filesystems.php` config
 ```php
 'gcs' => [
     'driver' => 'gcs',
+    'project_id' => env('GOOGLE_CLOUD_PROJECT_ID', 'your-project-id'),
     'key_file' => env('GOOGLE_CLOUD_KEY_FILE', '/path/to/service-account.json'), 
     'bucket' => env('GOOGLE_CLOUD_STORAGE_BUCKET', 'your-bucket'),
 ],
@@ -141,7 +142,7 @@ php artisan migrate
 ### Uploading images
 
 ```php
-$image = \Makeable\CloudImages\Image::upload($file); // a persisted eloquent model 
+$image = \Makeable\CloudImages\Image::upload($file); // returns a persisted Image model instance (eloquent)
 
 echo $image->path; // bucket path
 echo $image->url; // image-serving url
@@ -183,6 +184,13 @@ Checkout the *Sortable many to many* section of the [rutorika/sortable](https://
 If your model is expected to have just one image, you may use the convenient `image()` helper provided by the same `HasImages` trait.
 
 ```php
+class Product extends Eloquent
+{
+    use Makeable\CloudImages\HasImages;
+}
+```
+
+```php
 $image = Product::first()->image(); // Always returns an Image instance - even if none uploaded
 ```
 
@@ -214,23 +222,12 @@ Product::first()->image('featured')->replaceWith(Image::upload($file));
 - If the product did not have a 'featured' image, it would simple attach the new one
 - If the product did already have 'featured' image it would get replaced, and the old one deleted
 
-#### Example usage
+##### Pro tip: Use an eloquent mutator to set the new image 
 
-In this example we would like two different images size available on our `Product` model.
 ```php
 class Product extends Eloquent
 {
     use \Makeable\CloudImages\HasImages;
-    
-    public function getImageSquareAttribute()
-    {
-        return $this->image()->make()->cropCenter(500, 400)->get();
-    }
-
-    public function getImageWideAttribute()
-    {
-        return $this->image()->make()->cropCenter(1200, 400)->get();
-    }
     
     public function setImageAttribute($file)
     {
@@ -239,15 +236,8 @@ class Product extends Eloquent
 }
 ```
 
-Now you can access the sizes simply by referencing them as properties.
 ```php
-echo Product::first()->image_square;
-echo Product::first()->image_wide;
-```
-
-You can replace the image simply by setting the new `UploadedFile` 
-```php
-Product::first()->image = request()->file('image');
+Product::first()->image = request('image'); // replace image with an UploadedFile 'image'
 ```
 
 In your controller it would work seamlessly when validating and `filling` the model (Laravel 5.5 example).
@@ -260,6 +250,53 @@ public function store(Request $request)
             // ... some other fields
         ])
     );
+}
+```
+
+### Configuring image sizes per model
+
+Often times you want a few pre-configured sizes available. In this example we would like 'square' and 'wide' available on our `Product` model.
+
+We may extend the `Image` model and use that on our `Product->images()` relationship.
+
+```php
+class Product extends Eloquent
+{
+    use \Makeable\CloudImages\HasImages;
+    
+    protected $useImageClass = ProductImage::class;
+}
+```
+
+```php
+class ProductImage extends \Makeable\CloudImages\Image
+{
+    public function getSquareAttribute()
+    {
+        return $this->make()->cropCenter(500, 500)->get();
+    }
+
+    public function getWideAttribute()
+    {
+        return $this->make()->cropCenter(1200, 400)->get();
+    }
+}
+```
+
+Now you can access the sizes simply by referencing them as properties.
+```php
+echo Product::first()->image()->square; // single image usage
+echo Product::first()->images->first()->wide; // multiple images usage
+```
+
+Remember to add the sizes to `$appends` attribute if you want them available when casting to array:
+
+```php
+class ProductImage extends Image
+{
+    protected $appends = ['square', 'wide'];
+    
+    // ...
 }
 ```
 

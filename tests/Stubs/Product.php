@@ -8,4 +8,6 @@ use Makeable\CloudImages\HasImages;
 class Product extends Model
 {
     use HasImages;
+
+    protected $table = 'products';
 }
