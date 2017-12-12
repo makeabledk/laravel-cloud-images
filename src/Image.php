@@ -50,11 +50,12 @@ class Image extends Model
     /**
      * @param File|UploadedFile $image
      * @param null $path
+     * @param array|null $options
      * @return Image
      */
-    public static function upload($image, $path = null)
+    public static function upload($image, $path = null, array $options = null)
     {
-        $uploaded = resolve(Client::class)->upload($image, $path);
+        $uploaded = resolve(Client::class)->upload($image, $path, $options);
 
         return static::create([
             'path' => $uploaded->path,

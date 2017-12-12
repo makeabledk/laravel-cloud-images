@@ -66,4 +66,14 @@ class UploadTest extends TestCase
         CloudImageFacade::upload(UploadedFile::fake()->image('original-filename.jpg'));
         Event::assertDispatched(CloudImageUploaded::class);
     }
+
+    /** @test **/
+    public function it_accepts_extra_options()
+    {
+        $uploaded = CloudImageFacade::upload(UploadedFile::fake()->image('test.jpg'), 'test1.jpg', ['visibility' => 'private']);
+        $this->assertEquals('private', Storage::disk('gcs')->getVisibility($uploaded->path));
+
+        $uploaded = CloudImageFacade::upload(UploadedFile::fake()->image('test.jpg'), 'test2.jpg', ['visibility' => 'public']);
+        $this->assertEquals('public', Storage::disk('gcs')->getVisibility($uploaded->path));
+    }
 }

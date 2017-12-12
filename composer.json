@@ -21,7 +21,7 @@
         "doctrine/dbal": "^2.5",
         "orchestra/testbench": "~3.5",
         "mockery/mockery": "^0.9.9",
-        "rutorika/sortable": "^4.1"
+        "rutorika/sortable": "^4.2"
     },
     "suggests": {
         "illuminate/database": "Required for using extended image-tables functionality",

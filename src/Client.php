@@ -64,16 +64,17 @@ class Client
     /**
      * @param \Illuminate\Http\File|\Illuminate\Http\UploadedFile $image
      * @param null $path
+     * @param array|null $options
      * @return object
      * @throws FailedUploadException
      */
-    public function upload($image, $path = null)
+    public function upload($image, $path = null, array $options = null)
     {
         $path = $path ?: $image->hashName();
         $namespace = dirname($path) ?: '';
         $filename = basename($path);
 
-        if (! $this->disk()->putFileAs($namespace, $image, $filename)) {
+        if (! $this->disk()->putFileAs($namespace, $image, $filename, $options)) {
             throw new FailedUploadException('Failed to upload image to bucket');
         }
 
