@@ -68,12 +68,12 @@ class UploadTest extends TestCase
     }
 
     /** @test **/
-    public function it_accepts_extra_options()
+    public function it_can_be_set_public()
     {
-        $uploaded = CloudImageFacade::upload(UploadedFile::fake()->image('test.jpg'), 'test1.jpg', ['visibility' => 'private']);
+        $uploaded = CloudImageFacade::upload(UploadedFile::fake()->image('test.jpg'), 'test1.jpg', 'private');
         $this->assertEquals('private', Storage::disk('gcs')->getVisibility($uploaded->path));
 
-        $uploaded = CloudImageFacade::upload(UploadedFile::fake()->image('test.jpg'), 'test2.jpg', ['visibility' => 'public']);
+        $uploaded = CloudImageFacade::upload(UploadedFile::fake()->image('test.jpg'), 'test2.jpg', 'public');
         $this->assertEquals('public', Storage::disk('gcs')->getVisibility($uploaded->path));
     }
 }

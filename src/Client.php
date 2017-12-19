@@ -64,17 +64,18 @@ class Client
     /**
      * @param \Illuminate\Http\File|\Illuminate\Http\UploadedFile $image
      * @param null $path
-     * @param array|null $options
+     * @param string $visibility
      * @return object
      * @throws FailedUploadException
      */
-    public function upload($image, $path = null, array $options = null)
+    public function upload($image, $path = null, $visibility = null)
     {
         $path = $path ?: $image->hashName();
+        $visibility = $visibility ?: 'private';
         $namespace = dirname($path) ?: '';
         $filename = basename($path);
 
-        if (! $this->disk()->putFileAs($namespace, $image, $filename, $options)) {
+        if (! $this->disk()->putFileAs($namespace, $image, $filename, ['visibility' => 'private'])) {
             throw new FailedUploadException('Failed to upload image to bucket');
         }
 
@@ -82,9 +83,11 @@ class Client
             throw new FailedUploadException('Failed to parse file as image');
         }
 
-        $url = str_replace('http://', 'https://', json_decode($response->getBody())->url);
+        if ($visibility !== 'private') {
+            $this->disk()->setVisibility($path, $visibility);
+        }
 
-        return tap(new CloudImageUploaded($path, $url), function ($uploaded) {
+        return tap(new CloudImageUploaded($path, json_decode($response->getBody())->url), function ($uploaded) {
             event($uploaded);
         });
     }
