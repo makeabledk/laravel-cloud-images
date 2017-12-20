@@ -20,7 +20,7 @@ trait HasImages
     public function images()
     {
         return $this->morphToSortedMany($this->useImageModel, 'attachable', 'order', 'image_attachments', 'attachable_id', 'image_id')
-            ->withPivot('tag');
+            ->withPivot('tag')->withTimestamps();
     }
 
     /**
