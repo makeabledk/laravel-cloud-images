@@ -81,7 +81,7 @@ class Image extends Model
      */
     public function attachments()
     {
-        return $this->hasMany(ImageAttachment::class);
+        return $this->hasMany(ImageAttachment::class, 'image_id');
     }
 
     /**
