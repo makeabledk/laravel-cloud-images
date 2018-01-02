@@ -2,7 +2,7 @@
 
 return [
 
-    /**
+    /*
      * The default folder to upload images to
      *
      * If none specified, it will be uploaded to bucket root
