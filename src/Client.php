@@ -2,13 +2,13 @@
 
 namespace Makeable\CloudImages;
 
+use Config;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Storage;
 use Makeable\CloudImages\Events\CloudImageDeleted;
 use Makeable\CloudImages\Events\CloudImageUploaded;
 use Makeable\CloudImages\Exceptions\FailedDeletionException;
 use Makeable\CloudImages\Exceptions\FailedUploadException;
-use Symfony\Component\HttpFoundation\File\File;
 
 class Client
 {
@@ -70,7 +70,7 @@ class Client
      */
     public function upload($image, $path = null, $visibility = null)
     {
-        $path = $path ?: $image->hashName();
+        $path = $path ?: $image->hashName(Config::get('cloud-images.default_upload_path'));
         $visibility = $visibility ?: 'private';
         $namespace = dirname($path) ?: '';
         $filename = basename($path);
