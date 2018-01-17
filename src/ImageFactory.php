@@ -4,8 +4,9 @@ namespace Makeable\CloudImages;
 
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Arr;
+use JsonSerializable;
 
-class ImageFactory implements Arrayable
+class ImageFactory implements Arrayable, JsonSerializable
 {
     /**
      * @var
@@ -50,6 +51,14 @@ class ImageFactory implements Arrayable
         return $this->url
             ? rtrim($this->url, '=').'='.collect($this->options)->flatten()->implode('-')
             : null;
+    }
+
+    /**
+     * @return string
+     */
+    function jsonSerialize()
+    {
+        return $this->toArray();
     }
 
     /**
