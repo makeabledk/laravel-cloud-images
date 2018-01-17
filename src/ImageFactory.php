@@ -56,7 +56,7 @@ class ImageFactory implements Arrayable, JsonSerializable
     /**
      * @return string
      */
-    function jsonSerialize()
+    public function jsonSerialize()
     {
         return $this->toArray();
     }
