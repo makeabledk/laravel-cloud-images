@@ -8,7 +8,7 @@ use Rutorika\Sortable\MorphToSortedManyTrait;
 trait HasImages
 {
     use MorphToSortedManyTrait;
-    
+
     /**
      * @return MorphToSortedMany
      */
@@ -30,7 +30,7 @@ trait HasImages
             })
             ->first() ?: (new $this->getImageModelClass())->reserveFor($this, $tag);
     }
-    
+
     /**
      * @return string
      */
