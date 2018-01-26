@@ -28,7 +28,7 @@ trait HasImages
             ->when($tag !== null, function ($images) use ($tag) {
                 return $images->where('pivot.tag', $tag);
             })
-            ->first() ?: (new $this->getImageModelClass())->reserveFor($this, $tag);
+            ->first() ?: app($this->getImageModelClass())->reserveFor($this, $tag);
     }
 
     /**
