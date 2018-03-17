@@ -7,7 +7,9 @@
 
 This package provides a convenient to manage Google App Engine images through Laravel.
 
-It assumes you already have a configured App Engine imageserver and GCS Bucket.
+Please checkout [https://github.com/makeabledk/appengine-php-imageserver](https://github.com/makeabledk/appengine-php-imageserver) for more information on how to setup an imageserver for your project.
+
+This package assumes you already have a configured App Engine imageserver and GCS Bucket.
 
 ## Installation
 
