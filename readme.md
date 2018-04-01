@@ -124,7 +124,7 @@ This package provides an easy and opinionated way of doing that.
 
 ### Extended installation
 
-#### 1. Install `rutorika/sortable` package which is used to track sort-order 
+#### 1. Install `rutorika/sortable` package which is used to track sort-order (required)
 
 ```bash
 composer require rutorika/sortable
@@ -136,8 +136,9 @@ composer require rutorika/sortable
 composer require intervention/image 
 ```
 
-#### 3. Run migrations 
+#### 3. Publish and run migrations 
 ```bash
+php artisan vendor:publish --provider="Makeable\CloudImages\CloudImagesServiceProvider"
 php artisan migrate
 ```
 

@@ -36,8 +36,6 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase
         $app->useEnvironmentPath(__DIR__.'/..');
         $app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
         $app->register(CloudImagesServiceProvider::class);
-
-        // Since migrations are optional, we need to add them manually
         $app->afterResolving('migrator', function ($migrator) {
             $migrator->path(__DIR__.'/migrations/');
         });

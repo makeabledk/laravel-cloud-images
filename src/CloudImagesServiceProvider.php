@@ -12,8 +12,15 @@ class CloudImagesServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-        if (class_exists(SortableServiceProvider::class)) {
-            $this->registerImageDependencies();
+        if (! class_exists('CreateImagesTable')) {
+            $this->publishes([
+                __DIR__.'/../database/migrations/create_images_table.php.stub' => database_path('migrations/'.date('Y_m_d_His', time()).'_create_images_table.php'),
+                __DIR__.'/../database/migrations/create_image_attachments_table.php.stub' => database_path('migrations/'.date('Y_m_d_His', time() + 1).'_create_image_attachments_table.php'),
+            ], 'migrations');
+        }
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([Cleanup::class]);
         }
     }
 
@@ -43,14 +50,5 @@ class CloudImagesServiceProvider extends ServiceProvider
         return [
             Client::class,
         ];
-    }
-
-    protected function registerImageDependencies()
-    {
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-
-        if ($this->app->runningInConsole()) {
-            $this->commands([Cleanup::class]);
-        }
     }
 }
