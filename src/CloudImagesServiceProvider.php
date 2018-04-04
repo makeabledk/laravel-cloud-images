@@ -5,7 +5,6 @@ namespace Makeable\CloudImages;
 use Illuminate\Support\ServiceProvider;
 use Intervention\Image\ImageServiceProvider;
 use Makeable\CloudImages\Console\Commands\Cleanup;
-use Rutorika\Sortable\SortableServiceProvider;
 use Superbalist\LaravelGoogleCloudStorage\GoogleCloudStorageServiceProvider;
 
 class CloudImagesServiceProvider extends ServiceProvider
