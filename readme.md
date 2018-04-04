@@ -5,9 +5,11 @@
 [![Build Status](https://img.shields.io/travis/makeabledk/laravel-cloud-images/master.svg?style=flat-square)](https://travis-ci.org/makeabledk/laravel-cloud-images)
 [![StyleCI](https://styleci.io/repos/109057978/shield?branch=master)](https://styleci.io/repos/109057978)
 
-This package provides a convenient to manage Google App Engine images through Laravel.
+This package provides a convenient to manage Google App Engine Images API through Laravel.
 
-Please checkout [https://github.com/makeabledk/appengine-php-imageserver](https://github.com/makeabledk/appengine-php-imageserver) for more information on how to setup an imageserver for your project.
+Images API allows you to upload an image once to your GCS bucket and afterwards generate unlimited thumbnails just by requesting the specified size in the image-url. No delay, storage concerns or re-generate commands.
+
+Please checkout [https://github.com/makeabledk/appengine-php-imageserver](https://github.com/makeabledk/appengine-php-imageserver) for more information on Images API and how to setup an imageserver for your project.
 
 This package assumes you already have a configured App Engine imageserver and GCS Bucket.
 
@@ -111,12 +113,11 @@ If the functionality you need is not provided by the package, you can specify yo
 ```php
 $image->original()->param('fv')->get(); // This image will be flipped vertically
 ```
-
-While the [official Google Documentation](https://cloud.google.com/appengine/docs/standard/java/images/#using_if_lang_is_java_getservingurl_endif_if_lang_is_python_get_serving_url_endif) is poor to say the least, checkout this [Stackoverflow diskussion](https://stackoverflow.com/questions/25148567/list-of-all-the-app-engine-images-service-get-serving-url-uri-options) and try out the possibilities for yourself!
+Checkout our [makeabledk/appengine-php-imageserver](https://github.com/makeabledk/appengine-php-imageserver) repository for more information on available parameters.
 
 ## Extended usage (recommended)
 
-While uploading and serving images is fine, you will likely need to store the references in your database and attach them to some existing models.
+While uploading and serving images is all well and good, you will likely need to store the references in your database and attach them to some existing models.
 
 You will need to save both the URL as well as the bucket-path in case you ever want to delete them.
 
@@ -302,6 +303,7 @@ class ProductImage extends Image
     // ...
 }
 ```
+In Laravel 5.5, ApiResources would be a great place to append your image sizes as well.
 
 ### Cleaning up old images
 
