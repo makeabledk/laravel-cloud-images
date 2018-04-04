@@ -321,11 +321,6 @@ Use the `cloud-images:cleanup` command to delete images (along with the actual b
 php artisan cloud-images:cleanup
 ```
 
-
-## Change log
-
-Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
-
 ## Testing
 
 You can run the tests with:
