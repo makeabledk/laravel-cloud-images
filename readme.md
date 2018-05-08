@@ -9,6 +9,8 @@ This package provides a convenient to manage Google App Engine Images API throug
 
 Images API allows you to upload an image once to your GCS bucket and afterwards generate unlimited thumbnails just by requesting the specified size in the image-url. No delay, storage concerns or re-generate commands.
 
+**Important**
+
 Please checkout [https://github.com/makeabledk/appengine-php-imageserver](https://github.com/makeabledk/appengine-php-imageserver) for more information on Images API and how to setup an imageserver for your project.
 
 This package assumes you already have a configured App Engine imageserver and GCS Bucket.
@@ -96,9 +98,15 @@ $image->maxDimension(800)->get();
 #### Crop to dimensions
 
 ```php
-$image->crop(800, 500)->get(); // Crop from top
-$image->cropCenter(800, 500)->get(); // Crop from center
+$image->crop(300, 100)->get(); // Crop from top
+$image->cropCenter(300, 100)->get(); // Crop from center
 ```
+
+Example result:
+
+![Example image 1](https://lh3.googleusercontent.com/nVlGxZ1Gjz_FP_xjbqTFDZtT4mM6LpqNUlqf-FR5yOpuzfYckoFdpS66HBKVJkUCycFqP7pFJkFUKnE88cGj5ZlGrg=c-w300-h100)
+
+![Example image 2](https://lh3.googleusercontent.com/nVlGxZ1Gjz_FP_xjbqTFDZtT4mM6LpqNUlqf-FR5yOpuzfYckoFdpS66HBKVJkUCycFqP7pFJkFUKnE88cGj5ZlGrg=n-w300-h100)
 
 #### Stretch to dimensions
 
@@ -113,6 +121,8 @@ If the functionality you need is not provided by the package, you can specify yo
 ```php
 $image->original()->param('fv')->get(); // This image will be flipped vertically
 ```
+![Example image 3](https://lh3.googleusercontent.com/nVlGxZ1Gjz_FP_xjbqTFDZtT4mM6LpqNUlqf-FR5yOpuzfYckoFdpS66HBKVJkUCycFqP7pFJkFUKnE88cGj5ZlGrg=n-w300-h100-fv)
+
 Checkout our [makeabledk/appengine-php-imageserver](https://github.com/makeabledk/appengine-php-imageserver) repository for more information on available parameters.
 
 ## Extended usage (recommended)
