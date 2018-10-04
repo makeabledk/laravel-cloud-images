@@ -135,4 +135,12 @@ class Image extends Model
 
         return $this;
     }
+
+    /**
+     * @return float|int
+     */
+    public function getAspectRatioAttribute()
+    {
+        return $this->width / $this->height;
+    }
 }

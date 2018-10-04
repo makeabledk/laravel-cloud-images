@@ -9,13 +9,19 @@ use Superbalist\LaravelGoogleCloudStorage\GoogleCloudStorageServiceProvider;
 
 class CloudImagesServiceProvider extends ServiceProvider
 {
+    /**
+     * @var int
+     */
+    protected $publishedMigrationsIndex = 0;
+
     public function boot()
     {
         if (! class_exists('CreateImagesTable')) {
-            $this->publishes([
-                __DIR__.'/../database/migrations/create_images_table.php.stub' => database_path('migrations/'.date('Y_m_d_His', time()).'_create_images_table.php'),
-                __DIR__.'/../database/migrations/create_image_attachments_table.php.stub' => database_path('migrations/'.date('Y_m_d_His', time() + 1).'_create_image_attachments_table.php'),
-            ], 'migrations');
+            $this->publishMigration('create_images_table.php.stub');
+            $this->publishMigration('create_image_attachments_table.php.stub');
+        }
+        if (! class_exists('AddResponsiveFieldsToImagesTable')) {
+            $this->publishMigration('add_responsive_fields_to_images_table.php.stub');
         }
 
         if ($this->app->runningInConsole()) {
@@ -49,5 +55,20 @@ class CloudImagesServiceProvider extends ServiceProvider
         return [
             Client::class,
         ];
+    }
+
+    /**
+     * Publish a given migration stub
+     *
+     * @param $file
+     */
+    protected function publishMigration($file)
+    {
+        $this->publishes([
+            __DIR__.'/../database/migrations/'.$file =>
+                database_path('migrations/'.date('Y_m_d_His', time() + $this->publishedMigrationsIndex).'_'.str_replace('.php.stub', '.php', $file)),
+        ], 'migrations');
+
+        $this->publishedMigrationsIndex++; // ensures files are in right order
     }
 }

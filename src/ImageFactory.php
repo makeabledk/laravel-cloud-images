@@ -96,15 +96,15 @@ class ImageFactory implements Arrayable, JsonSerializable
      */
     public function getMaxDimension()
     {
-        return max(...$this->getDimensions());
+        return max(0, ...$this->getDimensions());
     }
 
     /**
-     * @return array|null
+     * @return array
      */
     public function getDimensions()
     {
-        return $this->dimensions;
+        return array_filter(Arr::wrap($this->dimensions));
     }
 
     /**
@@ -233,10 +233,9 @@ class ImageFactory implements Arrayable, JsonSerializable
     }
 
     /**
-     * @param $option
-     * @param $value
-     * @param $options
-     * @return $options
+     * @param mixed $value
+     * @param array $options
+     * @return array
      */
     protected function setSizingOption($value, $options)
     {

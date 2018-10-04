@@ -72,15 +72,17 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase
 
     /**
      * @param string $path
+     * @param int $width
+     * @param int $height
+     * @param int $size
      * @return Image
      */
-    protected function image($path = 'test.jpg')
+    protected function image($path = null, $width = 1, $height = 1, $size = 1)
     {
-        Storage::disk('gcs')->put($path, 'foo');
+        Storage::disk('gcs')->put($path = $path ?: 'test.jpg', 'foo');
 
-        return Image::create([
-            'path' => $path,
-            'url' => 'foo',
-        ]);
+        $url = 'foo';
+
+        return Image::create(compact('path', 'url', 'width', 'height', 'size'));
     }
 }

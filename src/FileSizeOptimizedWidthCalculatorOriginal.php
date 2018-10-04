@@ -5,7 +5,7 @@ namespace Makeable\CloudImages;
 use Illuminate\Support\Collection;
 use Makeable\CloudImages\ResponsiveImages\WidthCalculator\WidthCalculator;
 
-class FileSizeOptimizedWidthCalculator implements WidthCalculator
+class FileSizeOptimizedWidthCalculatorOriginal implements WidthCalculator
 {
     /**
      * @param string $imagePath
