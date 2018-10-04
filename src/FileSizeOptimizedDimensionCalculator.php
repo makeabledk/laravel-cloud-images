@@ -30,6 +30,7 @@ class FileSizeOptimizedDimensionCalculator // implements WidthCalculator
     {
         return new static($image->width, $image->height, $image->size);
     }
+
 //
 //    /**
 //     * @param string $imagePath

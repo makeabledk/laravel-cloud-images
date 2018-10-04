@@ -58,15 +58,14 @@ class CloudImagesServiceProvider extends ServiceProvider
     }
 
     /**
-     * Publish a given migration stub
+     * Publish a given migration stub.
      *
      * @param $file
      */
     protected function publishMigration($file)
     {
         $this->publishes([
-            __DIR__.'/../database/migrations/'.$file =>
-                database_path('migrations/'.date('Y_m_d_His', time() + $this->publishedMigrationsIndex).'_'.str_replace('.php.stub', '.php', $file)),
+            __DIR__.'/../database/migrations/'.$file => database_path('migrations/'.date('Y_m_d_His', time() + $this->publishedMigrationsIndex).'_'.str_replace('.php.stub', '.php', $file)),
         ], 'migrations');
 
         $this->publishedMigrationsIndex++; // ensures files are in right order

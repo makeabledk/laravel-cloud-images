@@ -3,12 +3,6 @@
 namespace Makeable\CloudImages\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Storage;
-use Makeable\CloudImages\CloudImageFacade;
-use Makeable\CloudImages\Events\CloudImageDeleted;
-use Makeable\CloudImages\Exceptions\FailedDeletionException;
-use Makeable\CloudImages\Tests\Fakes\FakeGuzzleClient;
 use Makeable\CloudImages\Tests\TestCase;
 
 class ResponsiveTest extends TestCase
