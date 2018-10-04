@@ -85,11 +85,26 @@ class Image extends Model
     }
 
     /**
+     * @return array
+     */
+    public function getDimensions()
+    {
+        list($width, $height) = getimagesize($this->make()->original()->get());
+
+        return [$width, $height];
+    }
+
+    /**
      * @return ImageFactory
      */
     public function make()
     {
         return new ImageFactory($this->url);
+    }
+
+    public function makeResponsive()
+    {
+
     }
 
     /**

@@ -14,16 +14,16 @@ class ImageFactory implements Arrayable, JsonSerializable
     public $url;
 
     /**
-     * @var array
+     * @var array|null
      */
-    protected $options = [
-        'sizing' => [],
-        'custom' => [],
-    ];
+    protected $dimensions;
 
     /**
-     * CloudImage constructor.
-     *
+     * @var array
+     */
+    protected $mutations = [];
+
+    /**
      * @param $url
      */
     public function __construct($url)
@@ -44,12 +44,16 @@ class ImageFactory implements Arrayable, JsonSerializable
      */
     public function get()
     {
-        if (count($this->options['sizing']) === 0) {
-            $this->original();
+        $options = array_reduce($this->mutations, function ($options, $mutation) {
+            return $this->applyMutation($mutation, $options);
+        }, ['sizing' => [], 'extra' => []]);
+
+        if (count(array_get($options, 'sizing', [])) === 0) {
+            return $this->original()->get();
         }
 
         return $this->url
-            ? rtrim($this->url, '=').'='.collect($this->options)->flatten()->implode('-')
+            ? rtrim($this->url, '=').'='.collect($options)->flatten()->implode('-')
             : null;
     }
 
@@ -72,6 +76,52 @@ class ImageFactory implements Arrayable, JsonSerializable
     // _________________________________________________________________________________________________________________
 
     /**
+     * @return mixed
+     */
+    public function getWidth()
+    {
+        return array_get($this->getDimensions(), 0);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getHeight()
+    {
+        return array_get($this->getDimensions(), 1);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMaxDimension()
+    {
+        return max(...$this->getDimensions());
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getDimensions()
+    {
+        return $this->dimensions;
+    }
+
+    /**
+     * @param $width
+     * @param null $height
+     * @return $this
+     */
+    public function setDimensions($width, $height = null)
+    {
+        $this->dimensions = [$width, $height];
+
+        return $this;
+    }
+
+    // _________________________________________________________________________________________________________________
+
+    /**
      * @param $width
      * @param $height
      * @param string $mode
@@ -79,7 +129,11 @@ class ImageFactory implements Arrayable, JsonSerializable
      */
     public function crop($width, $height, $mode = 'c')
     {
-        return $this->setGroup('sizing', [$mode, 'w'.$width, 'h'.$height]);
+        return $this
+            ->setDimensions($width, $height)
+            ->addMutation(function ($options) use ($mode) {
+                return $this->setSizingOption([$mode, 'w'.$this->getWidth(), 'h'.$this->getHeight()], $options);
+            });
     }
 
     /**
@@ -97,7 +151,11 @@ class ImageFactory implements Arrayable, JsonSerializable
      */
     public function original()
     {
-        return $this->setGroup('sizing', ['s0']);
+        return $this
+            ->setDimensions(null)
+            ->addMutation(function ($options) {
+                return $this->setSizingOption(['s0'], $options);
+            });
     }
 
     /**
@@ -106,18 +164,22 @@ class ImageFactory implements Arrayable, JsonSerializable
      */
     public function maxDimension($max)
     {
-        return $this->setGroup('sizing', ['s'.$max]);
+        return $this
+            ->setDimensions($max)
+            ->addMutation(function ($options) {
+                return $this->setSizingOption(['s'.$this->getMaxDimension()], $options);
+            });
     }
 
     /**
-     * @param $param
+     * @param $value
      * @return ImageFactory
      */
-    public function param($param)
+    public function param($value)
     {
-        return $this->setGroup('custom',
-            array_merge($this->options['custom'], Arr::wrap($param))
-        );
+        return $this->addMutation(function ($options) use ($value) {
+            return $this->addExtraOption($value, $options);
+        });
     }
 
     /**
@@ -127,18 +189,59 @@ class ImageFactory implements Arrayable, JsonSerializable
      */
     public function scale($width, $height)
     {
-        return $this->setGroup('sizing', ['s', 'w'.$width, 'h'.$height]);
+        return $this
+            ->setDimensions($width, $height)
+            ->addMutation(function ($options) {
+                return $this->setSizingOption(['s', 'w'.$this->getWidth(), 'h'.$this->getHeight()], $options);
+            });
+    }
+
+    // _________________________________________________________________________________________________________________
+
+    /**
+     * @param callable $mutation
+     * @return $this
+     */
+    protected function addMutation($mutation)
+    {
+        array_push($this->mutations, $mutation);
+
+        return $this;
+    }
+
+    /**
+     * @param $mutation
+     * @param $options
+     * @return mixed
+     */
+    protected function applyMutation($mutation, $options)
+    {
+        return call_user_func($mutation, $options);
     }
 
     /**
      * @param $option
      * @param $value
-     * @return $this
+     * @param $options
+     * @return $options
      */
-    public function setGroup($option, $value)
+    protected function addExtraOption($value, $options)
     {
-        $this->options[$option] = $value;
+        $options['extra'] = array_merge(array_get($options, 'extra', []), Arr::wrap($value));
 
-        return $this;
+        return $options;
+    }
+
+    /**
+     * @param $option
+     * @param $value
+     * @param $options
+     * @return $options
+     */
+    protected function setSizingOption($value, $options)
+    {
+        $options['sizing'] = $value;
+
+        return $options;
     }
 }
