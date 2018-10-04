@@ -104,7 +104,6 @@ class Image extends Model
 
     public function makeResponsive()
     {
-
     }
 
     /**
