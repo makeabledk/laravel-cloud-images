@@ -35,23 +35,4 @@ class FileSizeOptimizedDimensionCalculatorTest extends TestCase
 
         $this->assertTrue($this->area(...$smallest) < $this->area(150, 100));
     }
-
-    /**
-     * @param $mb
-     * @return int
-     */
-    protected function mb($mb)
-    {
-        return $mb * 1024 * 1024;
-    }
-
-    /**
-     * @param $x
-     * @param $y
-     * @return float|int
-     */
-    protected function area($x, $y)
-    {
-        return $x * $y;
-    }
 }

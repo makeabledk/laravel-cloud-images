@@ -2,6 +2,8 @@
 
 namespace Makeable\CloudImages;
 
+use BadMethodCallException;
+use Closure;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Arr;
 use JsonSerializable;
@@ -14,6 +16,11 @@ class ImageFactory implements Arrayable, JsonSerializable
     public $url;
 
     /**
+     * @var Image
+     */
+    protected $image;
+
+    /**
      * @var array|null
      */
     protected $dimensions;
@@ -21,7 +28,7 @@ class ImageFactory implements Arrayable, JsonSerializable
     /**
      * @var array
      */
-    protected $mutations = [];
+    protected $transformations = [];
 
     /**
      * @param $url
@@ -32,11 +39,15 @@ class ImageFactory implements Arrayable, JsonSerializable
     }
 
     /**
-     * @return string
+     * @param Image $image
+     * @return ImageFactory
      */
-    public function __toString()
+    public static function make(Image $image)
     {
-        return $this->get();
+        $factory = new static($image->url);
+        $factory->image = $image;
+
+        return $factory;
     }
 
     /**
@@ -44,8 +55,8 @@ class ImageFactory implements Arrayable, JsonSerializable
      */
     public function get()
     {
-        $options = array_reduce($this->mutations, function ($options, $mutation) {
-            return $this->applyMutation($mutation, $options);
+        $options = array_reduce($this->transformations, function ($options, Closure $transformation) {
+            return call_user_func($transformation->bindTo($this), $options);
         }, ['sizing' => [], 'extra' => []]);
 
         if (count(array_get($options, 'sizing', [])) === 0) {
@@ -58,19 +69,91 @@ class ImageFactory implements Arrayable, JsonSerializable
     }
 
     /**
-     * @return string
+     * @return ResponsiveImageFactory
+     * @throws \Throwable
      */
-    public function jsonSerialize()
+    public function responsive()
     {
-        return $this->toArray();
+        throw_unless($this->image, BadMethodCallException::class, 'No image instance bound to factory. Use static make() method instead.');
+
+        return new ResponsiveImageFactory($this->image, $this);
+    }
+
+    // _________________________________________________________________________________________________________________
+
+    /**
+     * @param $width
+     * @param $height
+     * @param string $mode
+     * @return ImageFactory
+     */
+    public function crop($width, $height, $mode = 'c')
+    {
+        return $this
+            ->setDimensions($width, $height)
+            ->transform(function ($options) use ($mode) {
+                return $this->setSizingOption([$mode, 'w'.$this->getWidth(), 'h'.$this->getHeight()], $options);
+            });
     }
 
     /**
-     * @return string
+     * @param $width
+     * @param $height
+     * @return ImageFactory
      */
-    public function toArray()
+    public function cropCenter($width, $height)
     {
-        return $this->get();
+        return $this->crop($width, $height, 'n');
+    }
+
+    /**
+     * @return ImageFactory
+     */
+    public function original()
+    {
+        return $this
+            ->setDimensions(null)
+            ->transform(function ($options) {
+                return $this->setSizingOption(['s0'], $options);
+            });
+    }
+
+    /**
+     * @param $max
+     * @return ImageFactory
+     */
+    public function maxDimension($max)
+    {
+        return $this
+            ->setDimensions($max)
+            ->transform(function ($options) {
+                return $this->setSizingOption(['s'.$this->getMaxDimension()], $options);
+            });
+    }
+
+    /**
+     * @param $value
+     * @return ImageFactory
+     */
+    public function param($value)
+    {
+        return $this->transform(function ($options) use ($value) {
+            return $this->addExtraOption($value, $options);
+        });
+    }
+
+    /**
+     * @param $width
+     * @param $height
+     * @return ImageFactory
+     */
+    public function scale($width, $height)
+    {
+        return $this
+            ->setDimensions($width, $height)
+            ->transform(function ($options) {
+                return $this->setSizingOption(['s', 'w'.$this->getWidth(), 'h'.$this->getHeight()], $options);
+            });
     }
 
     // _________________________________________________________________________________________________________________
@@ -122,101 +205,46 @@ class ImageFactory implements Arrayable, JsonSerializable
     // _________________________________________________________________________________________________________________
 
     /**
-     * @param $width
-     * @param $height
-     * @param string $mode
      * @return ImageFactory
      */
-    public function crop($width, $height, $mode = 'c')
+    public function clone()
     {
-        return $this
-            ->setDimensions($width, $height)
-            ->addMutation(function ($options) use ($mode) {
-                return $this->setSizingOption([$mode, 'w'.$this->getWidth(), 'h'.$this->getHeight()], $options);
-            });
+        return clone $this;
     }
 
     /**
-     * @param $width
-     * @param $height
-     * @return ImageFactory
+     * @return string
      */
-    public function cropCenter($width, $height)
+    public function jsonSerialize()
     {
-        return $this->crop($width, $height, 'n');
+        return $this->get();
     }
 
     /**
-     * @return ImageFactory
+     * @return string
      */
-    public function original()
+    public function toArray()
     {
-        return $this
-            ->setDimensions(null)
-            ->addMutation(function ($options) {
-                return $this->setSizingOption(['s0'], $options);
-            });
+        return $this->get();
     }
 
     /**
-     * @param $max
-     * @return ImageFactory
+     * @return string
      */
-    public function maxDimension($max)
+    public function __toString()
     {
-        return $this
-            ->setDimensions($max)
-            ->addMutation(function ($options) {
-                return $this->setSizingOption(['s'.$this->getMaxDimension()], $options);
-            });
+        return $this->get();
     }
 
     /**
-     * @param $value
-     * @return ImageFactory
-     */
-    public function param($value)
-    {
-        return $this->addMutation(function ($options) use ($value) {
-            return $this->addExtraOption($value, $options);
-        });
-    }
-
-    /**
-     * @param $width
-     * @param $height
-     * @return ImageFactory
-     */
-    public function scale($width, $height)
-    {
-        return $this
-            ->setDimensions($width, $height)
-            ->addMutation(function ($options) {
-                return $this->setSizingOption(['s', 'w'.$this->getWidth(), 'h'.$this->getHeight()], $options);
-            });
-    }
-
-    // _________________________________________________________________________________________________________________
-
-    /**
-     * @param callable $mutation
+     * @param Closure $transformation
      * @return $this
      */
-    protected function addMutation($mutation)
+    protected function transform(Closure $transformation)
     {
-        array_push($this->mutations, $mutation);
+        array_push($this->transformations, $transformation);
 
         return $this;
-    }
-
-    /**
-     * @param $mutation
-     * @param $options
-     * @return mixed
-     */
-    protected function applyMutation($mutation, $options)
-    {
-        return call_user_func($mutation, $options);
     }
 
     /**

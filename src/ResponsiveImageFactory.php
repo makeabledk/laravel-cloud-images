@@ -2,6 +2,8 @@
 
 namespace Makeable\CloudImages;
 
+use Illuminate\Support\Collection;
+
 /**
  * @mixin ImageFactory
  */
@@ -15,15 +17,16 @@ class ResponsiveImageFactory
     /**
      * @var ImageFactory
      */
-    protected $builder;
+    protected $factory;
 
     /**
      * @param Image $image
+     * @param ImageFactory|null $factory
      */
-    public function __construct(Image $image)
+    public function __construct(Image $image, ImageFactory $factory = null)
     {
         $this->image = $image;
-        $this->builder = $image->make();
+        $this->factory = $factory ?: $image->make();
     }
 
     /**
@@ -33,18 +36,27 @@ class ResponsiveImageFactory
      */
     public function __call($name, $arguments)
     {
-        return $this->builder->$name(...$arguments);
+        $this->factory->$name(...$arguments);
+
+        return $this;
     }
 
+    /**
+     * @return Collection
+     */
     public function get()
     {
-        $calculator = app()->makeWith(FileSizeOptimizedDimensionCalculator::class, [
-            $this->image->width,
-            $this->image->height,
-            $this->image->size
+        $calculator = app()->make(FileSizeOptimizedDimensionCalculator::class, [
+            'originalWidth' => $this->image->width,
+            'originalHeight' => $this->image->height,
+            'originalSize' => $this->image->size
         ]);
 
-        $calculator->calculateDimensions(...$this->getNormalizedDimensions());
+        return $calculator
+            ->calculateDimensions(...$this->getNormalizedDimensions())
+            ->map(function ($dimensions) {
+                return $this->factory->clone()->setDimensions(...$dimensions);
+            });
     }
 
     /**
@@ -52,7 +64,7 @@ class ResponsiveImageFactory
      */
     protected function getNormalizedDimensions()
     {
-        if (count($dimensions = $this->builder->getDimensions()) === 0) { // original
+        if (count($dimensions = $this->factory->getDimensions()) === 0) { // original
             return $this->image->getDimensions();
         }
         elseif (count($dimensions) === 1) { // max dimension specified - convert to actual dimensions

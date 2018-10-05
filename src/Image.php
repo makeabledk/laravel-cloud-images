@@ -24,6 +24,9 @@ class Image extends Model
      */
     protected $casts = [
         'meta' => 'array',
+        'width' => 'int',
+        'height' => 'int',
+        'size' => 'int',
     ];
 
     /**
@@ -60,6 +63,9 @@ class Image extends Model
         return static::create([
             'path' => $uploaded->path,
             'url' => $uploaded->url,
+            'size' => $image->getSize(),
+            'width' => array_get($dim = getimagesize($image), 0),
+            'height' => array_get($dim, 1),
             'meta' => config('cloud-images.read_exif')
                 ? app('image')->make($image->getRealPath())->exif()
                 : null,
@@ -89,9 +95,7 @@ class Image extends Model
      */
     public function getDimensions()
     {
-        list($width, $height) = getimagesize($this->make()->original()->get());
-
-        return [$width, $height];
+        return [$this->width, $this->height];
     }
 
     /**
@@ -99,12 +103,7 @@ class Image extends Model
      */
     public function make()
     {
-        return new ImageFactory($this->url);
-    }
-
-    public function makeResponsive()
-    {
-
+        return ImageFactory::make($this);
     }
 
     /**

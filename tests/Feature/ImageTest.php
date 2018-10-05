@@ -23,6 +23,9 @@ class ImageTest extends TestCase
         $this->assertEquals(1, $image->id);
         $this->assertEquals('test.jpg', $image->path);
         $this->assertEquals('https://localhost/somehash', $image->url);
+        $this->assertEquals(10, $image->width);
+        $this->assertEquals(10, $image->height);
+        $this->assertEquals(91, $image->size); // generated 10x10 image is 91 bytes
     }
 
     /** @test **/

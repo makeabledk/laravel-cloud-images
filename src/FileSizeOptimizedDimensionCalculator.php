@@ -15,11 +15,11 @@ class FileSizeOptimizedDimensionCalculator // implements WidthCalculator
     /**
      * @param $originalWidth
      * @param $originalHeight
-     * @param $originalFileSize
+     * @param $originalSize
      */
-    public function __construct($originalWidth, $originalHeight, $originalFileSize)
+    public function __construct($originalWidth, $originalHeight, $originalSize)
     {
-        $this->pixelPrice = $originalFileSize / ($originalWidth * $originalHeight);
+        $this->pixelPrice = $originalSize / ($originalWidth * $originalHeight);
     }
 
     /**
