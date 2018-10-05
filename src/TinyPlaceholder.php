@@ -41,13 +41,13 @@ class TinyPlaceholder implements ResponsiveImageVersion
     /**
      * @return string
      */
-    function get()
+    public function get()
     {
         return $this->image->tiny_placeholder;
     }
 
     /**
-     * Always 1px as this is the value used for <img srcset>
+     * Always 1px as this is the value used for <img srcset>.
      *
      * @return int
      */
