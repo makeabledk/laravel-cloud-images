@@ -49,7 +49,7 @@ class ResponsiveImageFactory
         $calculator = app()->make(FileSizeOptimizedDimensionCalculator::class, [
             'originalWidth' => $this->image->width,
             'originalHeight' => $this->image->height,
-            'originalSize' => $this->image->size
+            'originalSize' => $this->image->size,
         ]);
 
         return $calculator
@@ -66,13 +66,14 @@ class ResponsiveImageFactory
     {
         if (count($dimensions = $this->factory->getDimensions()) === 0) { // original
             return $this->image->getDimensions();
-        }
-        elseif (count($dimensions) === 1) { // max dimension specified - convert to actual dimensions
+        } elseif (count($dimensions) === 1) { // max dimension specified - convert to actual dimensions
             if (max($this->image->getDimensions()) === $this->image->width) {
                 return [$width = $dimensions[0], $width / $this->image->aspect_ratio]; // ie. 16:9
             }
+
             return [($height = $dimensions[0]) * $this->image->aspect_ratio, $height]; // ie. 9:16
         }
+
         return $dimensions;
     }
 }
