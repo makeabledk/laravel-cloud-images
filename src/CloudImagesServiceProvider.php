@@ -28,6 +28,8 @@ class CloudImagesServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([Cleanup::class]);
         }
+
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'cloud-images');
     }
 
     public function register()

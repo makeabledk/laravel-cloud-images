@@ -14,6 +14,12 @@ class ImageFactoryTest extends TestCase
     }
 
     /** @test **/
+    public function it_can_blur()
+    {
+        $this->assertEquals($this->url('s0-fSoften=1,10,0'), $this->cloudImage()->blur(10)->get());
+    }
+
+    /** @test **/
     public function it_can_scale_to_max_dimension()
     {
         $this->assertEquals($this->url('s400'), $this->cloudImage()->maxDimension(400)->get());

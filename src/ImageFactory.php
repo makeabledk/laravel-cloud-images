@@ -4,12 +4,14 @@ namespace Makeable\CloudImages;
 
 use BadMethodCallException;
 use Closure;
-use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Arr;
-use JsonSerializable;
+use Makeable\CloudImages\Contracts\ResponsiveImageVersion;
+use Makeable\CloudImages\Exceptions\FailedDownloadException;
 
-class ImageFactory implements Arrayable, JsonSerializable
+class ImageFactory implements ResponsiveImageVersion
 {
+    use ValueCasting;
+
     /**
      * @var
      */
@@ -51,6 +53,14 @@ class ImageFactory implements Arrayable, JsonSerializable
     }
 
     /**
+     * @return ImageFactory
+     */
+    public function clone()
+    {
+        return clone $this;
+    }
+
+    /**
      * @return string
      */
     public function get()
@@ -79,7 +89,29 @@ class ImageFactory implements Arrayable, JsonSerializable
         return new ResponsiveImageFactory($this->image, $this);
     }
 
+    /**
+     * @return string
+     * @throws \Throwable
+     */
+    public function getContents()
+    {
+        $response = app(\GuzzleHttp\Client::class)->request('GET', $this->get());
+
+        throw_unless($response->getStatusCode() === 200, FailedDownloadException::class, 'Failed with status code '.$response->getStatusCode());
+
+        return $response->getBody();
+    }
+
     // _________________________________________________________________________________________________________________
+
+    /**
+     * @param int $percentage
+     * @return ImageFactory
+     */
+    public function blur($percentage = 5)
+    {
+        return $this->param("fSoften=1,{$percentage},0");
+    }
 
     /**
      * @param $width
@@ -107,18 +139,6 @@ class ImageFactory implements Arrayable, JsonSerializable
     }
 
     /**
-     * @return ImageFactory
-     */
-    public function original()
-    {
-        return $this
-            ->setDimensions(null)
-            ->transform(function ($options) {
-                return $this->setSizingOption(['s0'], $options);
-            });
-    }
-
-    /**
      * @param $max
      * @return ImageFactory
      */
@@ -128,6 +148,18 @@ class ImageFactory implements Arrayable, JsonSerializable
             ->setDimensions($max)
             ->transform(function ($options) {
                 return $this->setSizingOption(['s'.$this->getMaxDimension()], $options);
+            });
+    }
+
+    /**
+     * @return ImageFactory
+     */
+    public function original()
+    {
+        return $this
+            ->setDimensions(null)
+            ->transform(function ($options) {
+                return $this->setSizingOption(['s0'], $options);
             });
     }
 
@@ -203,38 +235,6 @@ class ImageFactory implements Arrayable, JsonSerializable
     }
 
     // _________________________________________________________________________________________________________________
-
-    /**
-     * @return ImageFactory
-     */
-    public function clone()
-    {
-        return clone $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function jsonSerialize()
-    {
-        return $this->get();
-    }
-
-    /**
-     * @return string
-     */
-    public function toArray()
-    {
-        return $this->get();
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->get();
-    }
 
     /**
      * @param Closure $transformation
