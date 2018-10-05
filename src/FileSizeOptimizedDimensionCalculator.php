@@ -3,9 +3,9 @@
 namespace Makeable\CloudImages;
 
 use Illuminate\Support\Collection;
-use Makeable\CloudImages\ResponsiveImages\WidthCalculator\WidthCalculator;
+use Makeable\CloudImages\Contracts\DimensionCalculator;
 
-class FileSizeOptimizedDimensionCalculator // implements WidthCalculator
+class FileSizeOptimizedDimensionCalculator implements DimensionCalculator
 {
     /**
      * @var mixed
@@ -23,36 +23,11 @@ class FileSizeOptimizedDimensionCalculator // implements WidthCalculator
     }
 
     /**
-     * @param Image $image
-     * @return $this
-     */
-    public static function fromImage($image)
-    {
-        return new static($image->width, $image->height, $image->size);
-    }
-
-//
-//    /**
-//     * @param string $imagePath
-//     * @return Collection
-//     */
-//    public function calculateWidthsFromFile(string $imagePath): Collection
-//    {
-//        $image = ImageFactory::load($imagePath);
-//
-//        $width = $image->getWidth();
-//        $height = $image->getHeight();
-//        $fileSize = filesize($imagePath);
-//
-//        return $this->calculateWidths($fileSize, $width, $height);
-//    }
-
-    /**
      * @param int $width
      * @param int $height
      * @return Collection
      */
-    public function calculateDimensions($width, $height)
+    public function calculateDimensions($width, $height): Collection
     {
         $targetSizes = collect();
         $targetSizes->push([$width, $height]);

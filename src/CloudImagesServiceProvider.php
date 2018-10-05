@@ -5,6 +5,7 @@ namespace Makeable\CloudImages;
 use Illuminate\Support\ServiceProvider;
 use Intervention\Image\ImageServiceProvider;
 use Makeable\CloudImages\Console\Commands\Cleanup;
+use Makeable\CloudImages\Contracts\DimensionCalculator;
 use Superbalist\LaravelGoogleCloudStorage\GoogleCloudStorageServiceProvider;
 
 class CloudImagesServiceProvider extends ServiceProvider
@@ -33,7 +34,10 @@ class CloudImagesServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__.'/../config/cloud-images.php', 'cloud-images');
 
+        $this->app->bind(DimensionCalculator::class, FileSizeOptimizedDimensionCalculator::class);
+
         $this->app->register(GoogleCloudStorageServiceProvider::class);
+
         $this->app->singleton(Client::class, function () {
             return new Client('gcs', 'https://'.config('filesystems.disks.gcs.bucket'), new \GuzzleHttp\Client);
         });

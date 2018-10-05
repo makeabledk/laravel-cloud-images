@@ -3,6 +3,7 @@
 namespace Makeable\CloudImages;
 
 use Illuminate\Support\Collection;
+use Makeable\CloudImages\Contracts\DimensionCalculator;
 
 /**
  * @mixin ImageFactory
@@ -46,7 +47,7 @@ class ResponsiveImageFactory
      */
     public function get()
     {
-        $calculator = app()->make(FileSizeOptimizedDimensionCalculator::class, [
+        $calculator = app()->make(DimensionCalculator::class, [
             'originalWidth' => $this->image->width,
             'originalHeight' => $this->image->height,
             'originalSize' => $this->image->size,
