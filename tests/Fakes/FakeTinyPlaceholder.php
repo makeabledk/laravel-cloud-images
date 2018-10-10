@@ -2,7 +2,6 @@
 
 namespace Makeable\CloudImages\Tests\Fakes;
 
-use Makeable\CloudImages\Image;
 use Makeable\CloudImages\ImageFactory;
 use Makeable\CloudImages\TinyPlaceholder;
 

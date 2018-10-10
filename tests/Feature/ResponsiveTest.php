@@ -57,6 +57,7 @@ class ResponsiveTest extends TestCase
         $this->assertEquals([143, 85], $smallest->getDimensions());
         $this->assertEquals('n-w143-h85-fv', str_after($smallest->get(), '='));
     }
+
 //
 //    /** @test **/
 //    public function it_makes_a_placeholder()

@@ -2,7 +2,6 @@
 
 namespace Makeable\CloudImages;
 
-use Illuminate\Support\Arr;
 use Makeable\CloudImages\Contracts\ResponsiveImageVersion;
 
 class TinyPlaceholder implements ResponsiveImageVersion
@@ -45,7 +44,7 @@ class TinyPlaceholder implements ResponsiveImageVersion
      */
     public function get()
     {
-        list ($width, $height) = $this->getNormalizedDimensions(...$this->image->getDimensions());
+        list($width, $height) = $this->getNormalizedDimensions(...$this->image->getDimensions());
 
         $svg = view('cloud-images::placeholder_svg', [
             'originalImageWidth' => $width,
@@ -58,7 +57,7 @@ class TinyPlaceholder implements ResponsiveImageVersion
 
     /**
      * Get the calculated width from the placeholder
-     * factory using the actual image aspect ratio
+     * factory using the actual image aspect ratio.
      *
      * @return int|mixed
      */
