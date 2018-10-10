@@ -43,7 +43,7 @@ class TinyPlaceholder implements ResponsiveImageVersion
     /**
      * @return string
      */
-    function get()
+    public function get()
     {
         list ($width, $height) = $this->getNormalizedDimensions(...$this->image->getDimensions());
 

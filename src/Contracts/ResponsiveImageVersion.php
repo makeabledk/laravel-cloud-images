@@ -2,7 +2,6 @@
 
 namespace Makeable\CloudImages\Contracts;
 
-use Illuminate\Support\Collection;
 use Illuminate\Contracts\Support\Arrayable;
 use JsonSerializable;
 

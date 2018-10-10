@@ -7,7 +7,7 @@ trait ValueCasting
     /**
      * @return mixed
      */
-    abstract function get();
+    abstract public function get();
 
     /**
      * @return string
