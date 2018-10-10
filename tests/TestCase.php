@@ -8,6 +8,9 @@ use Makeable\CloudImages\CloudImageFacade;
 use Makeable\CloudImages\CloudImagesServiceProvider;
 use Makeable\CloudImages\Image;
 use Makeable\CloudImages\Tests\Fakes\FakeGuzzleClient;
+use Makeable\CloudImages\Tests\Fakes\FakeTinyPlaceholder;
+use Makeable\CloudImages\TinyPlaceholder;
+use Makeable\CloudImages\TinyPlaceholderGenerator;
 
 class TestCase extends \Illuminate\Foundation\Testing\TestCase
 {
@@ -55,9 +58,13 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase
             return new FakeGuzzleClient();
         });
 
+        app()->bind(TinyPlaceholder::class, FakeTinyPlaceholder::class);
+
         app()->singleton(Client::class, function ($app) {
             return new Client('gcs', 'localhost', $app->make(FakeGuzzleClient::class));
         });
+
+        config()->set('cloud-images.use_tiny_placeholders', false);
     }
 
     /**

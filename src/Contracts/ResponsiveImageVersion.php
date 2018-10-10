@@ -16,5 +16,5 @@ interface ResponsiveImageVersion extends Arrayable, JsonSerializable
     /**
      * @return int
      */
-    public function getWidth();
+    public function getDisplayWidth();
 }

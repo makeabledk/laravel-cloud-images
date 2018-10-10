@@ -2,11 +2,13 @@
 
 namespace Makeable\CloudImages;
 
+use Illuminate\Support\Arr;
 use Makeable\CloudImages\Contracts\ResponsiveImageVersion;
 
 class TinyPlaceholder implements ResponsiveImageVersion
 {
-    use ValueCasting;
+    use HasDimensions,
+        ValueCasting;
 
     /**
      * @var Image
@@ -22,20 +24,20 @@ class TinyPlaceholder implements ResponsiveImageVersion
     }
 
     /**
+     * @return ImageFactory
+     */
+    public function factory()
+    {
+        return $this->image->make()->maxDimension(32)->blur();
+    }
+
+    /**
      * @return string
      * @throws \Throwable
      */
-    public function generate()
+    public function create()
     {
-        $contents = $this->image->make()->maxDimension(32)->blur()->getContents();
-
-        $svg = view('cloud-images::placeholderSvg', [
-            'originalImageWidth' => $this->image->width,
-            'originalImageHeight' => $this->image->height,
-            'tinyImageBase64' => 'data:image/jpeg;base64,'.base64_encode($contents),
-        ]);
-
-        return 'data:image/svg+xml;base64,'.base64_encode($svg);
+        return 'data:image/jpeg;base64,'.base64_encode($this->factory()->getContents());
     }
 
     /**
@@ -43,16 +45,25 @@ class TinyPlaceholder implements ResponsiveImageVersion
      */
     function get()
     {
-        return $this->image->tiny_placeholder;
+        list ($width, $height) = $this->getNormalizedDimensions(...$this->image->getDimensions());
+
+        $svg = view('cloud-images::placeholder_svg', [
+            'originalImageWidth' => $width,
+            'originalImageHeight' => $height,
+            'tinyImageBase64' => $this->image->tiny_placeholder,
+        ]);
+
+        return 'data:image/svg+xml;base64,'.base64_encode($svg);
     }
 
     /**
-     * Always 1px as this is the value used for <img srcset>
+     * Get the calculated width from the placeholder
+     * factory using the actual image aspect ratio
      *
-     * @return int
+     * @return int|mixed
      */
-    public function getWidth()
+    public function getDisplayWidth()
     {
-        return 1;
+        return array_get($this->factory()->getNormalizedDimensions(...$this->image->getDimensions()), 0);
     }
 }

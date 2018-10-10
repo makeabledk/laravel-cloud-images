@@ -50,4 +50,17 @@ class ImageTest extends TestCase
 
         $this->assertEquals(1000, $image->meta['COMPUTED']['Height']);
     }
+
+    /** @test **/
+    public function it_generates_a_tiny_placeholder()
+    {
+        config()->set('cloud-images.use_tiny_placeholders', true);
+
+        $image = Image::upload(new File(__DIR__.'/../image.jpg'), 'test.jpg');
+
+        $info = getimagesize($image->tiny_placeholder);
+
+        $this->assertEquals(32, $info[0]);
+        $this->assertEquals('image/jpeg', $info['mime']);
+    }
 }

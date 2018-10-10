@@ -51,25 +51,32 @@ class Image extends Model
     }
 
     /**
-     * @param File|UploadedFile $image
+     * @param File|UploadedFile $file
      * @param string | null $path
      * @param string | null $visibility
      * @return Image
      */
-    public static function upload($image, $path = null, $visibility = null)
+    public static function upload($file, $path = null, $visibility = null)
     {
-        $uploaded = resolve(Client::class)->upload($image, $path, $visibility);
+        $uploaded = resolve(Client::class)->upload($file, $path, $visibility);
 
-        return static::create([
+        $image = new static([
             'path' => $uploaded->path,
             'url' => $uploaded->url,
-            'size' => $image->getSize(),
-            'width' => array_get($dim = getimagesize($image), 0),
+            'size' => $file->getSize(),
+            'width' => array_get($dim = getimagesize($file), 0),
             'height' => array_get($dim, 1),
-            'meta' => config('cloud-images.read_exif')
-                ? app('image')->make($image->getRealPath())->exif()
-                : null,
         ]);
+
+        if (config('cloud-images.read_exif')) {
+            $image->meta = app('image')->make($file->getRealPath())->exif();
+        }
+
+        if (config('cloud-images.use_tiny_placeholders')) {
+            $image->tiny_placeholder = $image->placeholder()->create();
+        }
+
+        return tap($image)->save();
     }
 
     /**
@@ -104,6 +111,14 @@ class Image extends Model
     public function make()
     {
         return ImageFactory::make($this);
+    }
+
+    /**
+     * @return TinyPlaceholder
+     */
+    public function placeholder()
+    {
+        return app()->makeWith(TinyPlaceholder::class, ['image' => $this]);
     }
 
     /**

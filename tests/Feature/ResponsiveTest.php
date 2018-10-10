@@ -4,9 +4,12 @@ namespace Makeable\CloudImages\Tests\Feature;
 
 use BadMethodCallException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\File;
 use Illuminate\Support\Collection;
+use Makeable\CloudImages\Image;
 use Makeable\CloudImages\ImageFactory;
 use Makeable\CloudImages\Tests\TestCase;
+use Makeable\CloudImages\TinyPlaceholder;
 
 class ResponsiveTest extends TestCase
 {
@@ -54,4 +57,15 @@ class ResponsiveTest extends TestCase
         $this->assertEquals([143, 85], $smallest->getDimensions());
         $this->assertEquals('n-w143-h85-fv', str_after($smallest->get(), '='));
     }
+//
+//    /** @test **/
+//    public function it_makes_a_placeholder()
+//    {
+////        config()->set('cloud-images.generate_placeholder', true);
+////
+////        $image = Image::upload(new File(__DIR__.'/../image.jpg'), 'test.jpg');
+////
+////        echo (string) (new TinyPlaceholder($image))->setDimensions(800, 600);
+//
+//    }
 }

@@ -53,28 +53,23 @@ class ResponsiveImageFactory
             'originalSize' => $this->image->size,
         ]);
 
+        $fullDimensions = $this->factory->getNormalizedDimensions(...$this->image->getDimensions());
+
         return $calculator
-            ->calculateDimensions(...$this->getNormalizedDimensions())
+            ->calculateDimensions(...$fullDimensions)
             ->map(function ($dimensions) {
                 return $this->factory->clone()->setDimensions(...$dimensions);
+            })
+            ->when($this->usingPlaceholder(), function (Collection $versions) use ($fullDimensions) {
+                return $versions->push($this->image->placeholder()->setDimensions(...$fullDimensions));
             });
     }
 
     /**
-     * @return array
+     * @return bool
      */
-    protected function getNormalizedDimensions()
+    protected function usingPlaceholder()
     {
-        if (count($dimensions = $this->factory->getDimensions()) === 0) { // original
-            return $this->image->getDimensions();
-        } elseif (count($dimensions) === 1) { // max dimension specified - convert to actual dimensions
-            if (max($this->image->getDimensions()) === $this->image->width) {
-                return [$width = $dimensions[0], $width / $this->image->aspect_ratio]; // ie. 16:9
-            }
-
-            return [($height = $dimensions[0]) * $this->image->aspect_ratio, $height]; // ie. 9:16
-        }
-
-        return $dimensions;
+        return config('cloud-images.use_tiny_placeholders') && $this->image->tiny_placeholder;
     }
 }

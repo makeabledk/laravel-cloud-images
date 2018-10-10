@@ -10,7 +10,8 @@ use Makeable\CloudImages\Exceptions\FailedDownloadException;
 
 class ImageFactory implements ResponsiveImageVersion
 {
-    use ValueCasting;
+    use HasDimensions,
+        ValueCasting;
 
     /**
      * @var
@@ -21,11 +22,6 @@ class ImageFactory implements ResponsiveImageVersion
      * @var Image
      */
     protected $image;
-
-    /**
-     * @var array|null
-     */
-    protected $dimensions;
 
     /**
      * @var array
@@ -191,50 +187,12 @@ class ImageFactory implements ResponsiveImageVersion
     // _________________________________________________________________________________________________________________
 
     /**
-     * @return mixed
+     * @return int|mixed
      */
-    public function getWidth()
+    public function getDisplayWidth()
     {
-        return array_get($this->getDimensions(), 0);
+        return $this->getWidth();
     }
-
-    /**
-     * @return mixed
-     */
-    public function getHeight()
-    {
-        return array_get($this->getDimensions(), 1);
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getMaxDimension()
-    {
-        return max(0, ...$this->getDimensions());
-    }
-
-    /**
-     * @return array
-     */
-    public function getDimensions()
-    {
-        return array_filter(Arr::wrap($this->dimensions));
-    }
-
-    /**
-     * @param $width
-     * @param null $height
-     * @return $this
-     */
-    public function setDimensions($width, $height = null)
-    {
-        $this->dimensions = [$width, $height];
-
-        return $this;
-    }
-
-    // _________________________________________________________________________________________________________________
 
     /**
      * @param Closure $transformation
