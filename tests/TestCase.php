@@ -8,6 +8,8 @@ use Makeable\CloudImages\CloudImageFacade;
 use Makeable\CloudImages\CloudImagesServiceProvider;
 use Makeable\CloudImages\Image;
 use Makeable\CloudImages\Tests\Fakes\FakeGuzzleClient;
+use Makeable\CloudImages\Tests\Fakes\FakeTinyPlaceholder;
+use Makeable\CloudImages\TinyPlaceholder;
 
 class TestCase extends \Illuminate\Foundation\Testing\TestCase
 {
@@ -55,9 +57,13 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase
             return new FakeGuzzleClient();
         });
 
+        app()->bind(TinyPlaceholder::class, FakeTinyPlaceholder::class);
+
         app()->singleton(Client::class, function ($app) {
             return new Client('gcs', 'localhost', $app->make(FakeGuzzleClient::class));
         });
+
+        $this->usePlaceholders(false);
     }
 
     /**
@@ -72,15 +78,51 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase
 
     /**
      * @param string $path
+     * @param int $width
+     * @param int $height
+     * @param int $size
      * @return Image
      */
-    protected function image($path = 'test.jpg')
+    protected function image($path = null, $width = 1000, $height = 1000, $size = null)
     {
-        Storage::disk('gcs')->put($path, 'foo');
+        Storage::disk('gcs')->put($path = $path ?: 'test.jpg', 'foo');
 
-        return Image::create([
-            'path' => $path,
-            'url' => 'foo',
-        ]);
+        $url = 'foo';
+        $size = $size ?: $this->mb(1);
+
+        return Image::create(compact('path', 'url', 'width', 'height', 'size'));
+    }
+
+    /**
+     * @param $mb
+     * @return int
+     */
+    protected function mb($mb)
+    {
+        return $mb * 1024 * 1024;
+    }
+
+    /**
+     * @param $x
+     * @param $y
+     * @return float|int
+     */
+    protected function area($x, $y)
+    {
+        return $x * $y;
+    }
+
+    /**
+     * @param bool $bool
+     * @return FakeTinyPlaceholder
+     */
+    protected function usePlaceholders($bool = true)
+    {
+        config()->set('cloud-images.use_tiny_placeholders', $bool);
+
+        $factory = app(TinyPlaceholder::class);
+        $factory->testActualFactory(false);
+
+        return $factory;
     }
 }

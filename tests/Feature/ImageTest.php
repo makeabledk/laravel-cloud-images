@@ -23,6 +23,10 @@ class ImageTest extends TestCase
         $this->assertEquals(1, $image->id);
         $this->assertEquals('test.jpg', $image->path);
         $this->assertEquals('https://localhost/somehash', $image->url);
+        $this->assertEquals(10, $image->width);
+        $this->assertEquals(10, $image->height);
+//        $this->assertGreaterThan(50, $image->size); // Image size can vary a bit between environments
+//        $this->assertLessThan(100, $image->size);
     }
 
     /** @test **/
@@ -45,5 +49,41 @@ class ImageTest extends TestCase
         $image = Image::upload(new File(__DIR__.'/../image.jpg'), 'test.jpg');
 
         $this->assertEquals(1000, $image->meta['COMPUTED']['Height']);
+    }
+
+    /** @test **/
+    public function it_generates_a_tiny_placeholder()
+    {
+        $this->usePlaceholders()->testActualFactory();
+
+        $image = Image::upload(new File(__DIR__.'/../image.jpg'), 'test.jpg');
+
+        $info = getimagesize($image->tiny_placeholder);
+
+        $this->assertEquals(32, $info[0]);
+        $this->assertEquals('image/jpeg', $info['mime']);
+    }
+
+    /** @test **/
+    public function it_casts_to_a_responsive_html_img_tag()
+    {
+        $image = Image::upload(new File(__DIR__.'/../image.jpg'), 'test.jpg');
+
+        $this->assertContains('<img', $html = (string) $image);
+        $this->assertContains('srcset', $html = (string) $image);
+        $this->assertNotContains('sizes', $html = (string) $image);
+    }
+
+    /** @test **/
+    public function it_casts_to_a_responsive_html_img_tag_with_placeholder_when_enabled()
+    {
+        $this->usePlaceholders();
+
+        $image = Image::upload(new File(__DIR__.'/../image.jpg'), 'test.jpg');
+
+        $this->assertContains('<img', $html = (string) $image);
+        $this->assertContains('srcset', $html = (string) $image);
+        $this->assertContains('sizes', $html = (string) $image);
+        $this->assertContains('onload', $html = (string) $image);
     }
 }

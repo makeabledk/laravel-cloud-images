@@ -1,0 +1,34 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+
+class AddResponsiveFieldsToImagesTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::table('images', function (Blueprint $table) {
+            $table->unsignedInteger('width')->nullable()->after('url');
+            $table->unsignedInteger('height')->nullable()->after('width');
+            $table->unsignedInteger('size')->nullable()->after('height');
+            $table->text('tiny_placeholder')->nullable()->after('size');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::table('images', function (Blueprint $table) {
+            $table->dropColumn('width', 'height', 'size', 'tiny_placeholder');
+        });
+    }
+}

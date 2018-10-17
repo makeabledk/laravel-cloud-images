@@ -24,6 +24,9 @@ class Image extends Model
      */
     protected $casts = [
         'meta' => 'array',
+        'width' => 'int',
+        'height' => 'int',
+        'size' => 'int',
     ];
 
     /**
@@ -48,22 +51,32 @@ class Image extends Model
     }
 
     /**
-     * @param File|UploadedFile $image
+     * @param File|UploadedFile $file
      * @param string | null $path
      * @param string | null $visibility
      * @return Image
      */
-    public static function upload($image, $path = null, $visibility = null)
+    public static function upload($file, $path = null, $visibility = null)
     {
-        $uploaded = resolve(Client::class)->upload($image, $path, $visibility);
+        $uploaded = resolve(Client::class)->upload($file, $path, $visibility);
 
-        return static::create([
+        $image = new static([
             'path' => $uploaded->path,
             'url' => $uploaded->url,
-            'meta' => config('cloud-images.read_exif')
-                ? app('image')->make($image->getRealPath())->exif()
-                : null,
+            'size' => $file->getSize(),
+            'width' => array_get($dim = getimagesize($file), 0),
+            'height' => array_get($dim, 1),
         ]);
+
+        if (config('cloud-images.read_exif')) {
+            $image->meta = app('image')->make($file->getRealPath())->exif();
+        }
+
+        if (config('cloud-images.use_tiny_placeholders')) {
+            $image->tiny_placeholder = $image->placeholder()->create();
+        }
+
+        return tap($image)->save();
     }
 
     /**
@@ -85,11 +98,27 @@ class Image extends Model
     }
 
     /**
+     * @return array
+     */
+    public function getDimensions()
+    {
+        return [$this->width, $this->height];
+    }
+
+    /**
      * @return ImageFactory
      */
     public function make()
     {
-        return new ImageFactory($this->url);
+        return ImageFactory::make($this);
+    }
+
+    /**
+     * @return TinyPlaceholder
+     */
+    public function placeholder()
+    {
+        return app()->makeWith(TinyPlaceholder::class, ['image' => $this]);
     }
 
     /**
@@ -119,5 +148,22 @@ class Image extends Model
         $this->reservedForTag = $tag;
 
         return $this;
+    }
+
+    /**
+     * @return float|int
+     */
+    public function getAspectRatioAttribute()
+    {
+        return $this->width / $this->height;
+    }
+
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View|string
+     * @throws \Throwable
+     */
+    public function __toString()
+    {
+        return $this->make()->responsive()->getHtml();
     }
 }
