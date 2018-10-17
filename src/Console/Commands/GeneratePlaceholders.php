@@ -31,6 +31,7 @@ class GeneratePlaceholders extends Command
     {
         if (! config('cloud-images.use_tiny_placeholders')) {
             $this->error('Placeholders are disabled in your config');
+
             return;
         }
 
