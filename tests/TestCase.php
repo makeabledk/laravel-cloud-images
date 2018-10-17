@@ -10,7 +10,6 @@ use Makeable\CloudImages\Image;
 use Makeable\CloudImages\Tests\Fakes\FakeGuzzleClient;
 use Makeable\CloudImages\Tests\Fakes\FakeTinyPlaceholder;
 use Makeable\CloudImages\TinyPlaceholder;
-use Makeable\CloudImages\TinyPlaceholderGenerator;
 
 class TestCase extends \Illuminate\Foundation\Testing\TestCase
 {

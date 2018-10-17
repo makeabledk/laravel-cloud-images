@@ -2,7 +2,6 @@
 
 namespace Makeable\CloudImages\Tests\Fakes;
 
-use Makeable\CloudImages\Image;
 use Makeable\CloudImages\ImageFactory;
 use Makeable\CloudImages\TinyPlaceholder;
 
@@ -19,10 +18,11 @@ class FakeTinyPlaceholder extends TinyPlaceholder
 
     public function factory()
     {
-        $factory = new class ('https://lh3.googleusercontent.com/nVlGxZ1Gjz_FP_xjbqTFDZtT4mM6LpqNUlqf-FR5yOpuzfYckoFdpS66HBKVJkUCycFqP7pFJkFUKnE88cGj5ZlGrg') extends ImageFactory {
+        $factory = new class('https://lh3.googleusercontent.com/nVlGxZ1Gjz_FP_xjbqTFDZtT4mM6LpqNUlqf-FR5yOpuzfYckoFdpS66HBKVJkUCycFqP7pFJkFUKnE88cGj5ZlGrg') extends ImageFactory {
             public static $shouldMock;
 
-            public function getContents() {
+            public function getContents()
+            {
                 return static::$shouldMock
                     ? file_get_contents(__DIR__.'/../placeholder.jpg')
                     : parent::getContents();
