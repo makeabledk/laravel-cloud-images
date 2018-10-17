@@ -4,8 +4,6 @@ namespace Makeable\CloudImages\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
-use Makeable\CloudImages\Image;
-use Makeable\CloudImages\Tests\Stubs\Product;
 use Makeable\CloudImages\Tests\TestCase;
 
 class GeneratePlaceholdersTest extends TestCase
