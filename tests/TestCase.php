@@ -120,6 +120,9 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase
     {
         config()->set('cloud-images.use_tiny_placeholders', $bool);
 
-        return app(TinyPlaceholder::class);
+        $factory = app(TinyPlaceholder::class);
+        $factory->testActualFactory(false);
+
+        return $factory;
     }
 }

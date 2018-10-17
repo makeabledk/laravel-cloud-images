@@ -5,6 +5,7 @@ namespace Makeable\CloudImages;
 use Illuminate\Support\ServiceProvider;
 use Intervention\Image\ImageServiceProvider;
 use Makeable\CloudImages\Console\Commands\Cleanup;
+use Makeable\CloudImages\Console\Commands\GeneratePlaceholders;
 use Makeable\CloudImages\Contracts\DimensionCalculator;
 use Superbalist\LaravelGoogleCloudStorage\GoogleCloudStorageServiceProvider;
 
@@ -26,7 +27,10 @@ class CloudImagesServiceProvider extends ServiceProvider
         }
 
         if ($this->app->runningInConsole()) {
-            $this->commands([Cleanup::class]);
+            $this->commands([
+                Cleanup::class,
+                GeneratePlaceholders::class,
+            ]);
         }
 
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'cloud-images');
