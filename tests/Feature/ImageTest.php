@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use Makeable\CloudImages\Image;
 use Makeable\CloudImages\Tests\TestCase;
-use Makeable\CloudImages\TinyPlaceholder;
 
 class ImageTest extends TestCase
 {

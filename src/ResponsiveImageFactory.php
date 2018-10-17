@@ -85,7 +85,7 @@ class ResponsiveImageFactory implements Arrayable, JsonSerializable
             : 'cloud-images::responsive-image';
 
         return view($view, array_merge($this->toArray(), [
-            'attributeString' => $this->attributesToString($attributes)
+            'attributeString' => $this->attributesToString($attributes),
         ]))->render();
     }
 
@@ -123,7 +123,7 @@ class ResponsiveImageFactory implements Arrayable, JsonSerializable
         return [
             'src' => $this->getSrc(),
             'srcset' => $this->getSrcset(),
-            'width' => array_get($this->getDimensions(), 0)
+            'width' => array_get($this->getDimensions(), 0),
         ];
     }
 
