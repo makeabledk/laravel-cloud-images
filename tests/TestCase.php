@@ -64,7 +64,7 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase
             return new Client('gcs', 'localhost', $app->make(FakeGuzzleClient::class));
         });
 
-        config()->set('cloud-images.use_tiny_placeholders', false);
+        $this->usePlaceholders(false);
     }
 
     /**
@@ -111,5 +111,16 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase
     protected function area($x, $y)
     {
         return $x * $y;
+    }
+
+    /**
+     * @param bool $bool
+     * @return FakeTinyPlaceholder
+     */
+    protected function usePlaceholders($bool = true)
+    {
+        config()->set('cloud-images.use_tiny_placeholders', $bool);
+
+        return app(TinyPlaceholder::class);
     }
 }

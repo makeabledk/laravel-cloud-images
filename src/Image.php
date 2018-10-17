@@ -157,4 +157,13 @@ class Image extends Model
     {
         return $this->width / $this->height;
     }
+
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View|string
+     * @throws \Throwable
+     */
+    public function __toString()
+    {
+        return $this->make()->responsive()->getHtml();
+    }
 }

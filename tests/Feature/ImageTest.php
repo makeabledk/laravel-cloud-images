@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use Makeable\CloudImages\Image;
 use Makeable\CloudImages\Tests\TestCase;
+use Makeable\CloudImages\TinyPlaceholder;
 
 class ImageTest extends TestCase
 {
@@ -54,7 +55,7 @@ class ImageTest extends TestCase
     /** @test **/
     public function it_generates_a_tiny_placeholder()
     {
-        config()->set('cloud-images.use_tiny_placeholders', true);
+        $this->usePlaceholders()->testActualFactory();
 
         $image = Image::upload(new File(__DIR__.'/../image.jpg'), 'test.jpg');
 
@@ -62,5 +63,28 @@ class ImageTest extends TestCase
 
         $this->assertEquals(32, $info[0]);
         $this->assertEquals('image/jpeg', $info['mime']);
+    }
+
+    /** @test **/
+    public function it_casts_to_a_responsive_html_img_tag()
+    {
+        $image = Image::upload(new File(__DIR__.'/../image.jpg'), 'test.jpg');
+
+        $this->assertContains('<img', $html = (string) $image);
+        $this->assertContains('srcset', $html = (string) $image);
+        $this->assertNotContains('sizes', $html = (string) $image);
+    }
+
+    /** @test **/
+    public function it_casts_to_a_responsive_html_img_tag_with_placeholder_when_enabled()
+    {
+        $this->usePlaceholders();
+
+        $image = Image::upload(new File(__DIR__.'/../image.jpg'), 'test.jpg');
+
+        $this->assertContains('<img', $html = (string) $image);
+        $this->assertContains('srcset', $html = (string) $image);
+        $this->assertContains('sizes', $html = (string) $image);
+        $this->assertContains('onload', $html = (string) $image);
     }
 }

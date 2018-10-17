@@ -57,15 +57,51 @@ class ResponsiveTest extends TestCase
         $this->assertEquals([143, 85], $smallest->getDimensions());
         $this->assertEquals('n-w143-h85-fv', str_after($smallest->get(), '='));
     }
-//
-//    /** @test **/
-//    public function it_makes_a_placeholder()
-//    {
-////        config()->set('cloud-images.generate_placeholder', true);
-////
-////        $image = Image::upload(new File(__DIR__.'/../image.jpg'), 'test.jpg');
-////
-////        echo (string) (new TinyPlaceholder($image))->setDimensions(800, 600);
-//
-//    }
+
+    /** @test **/
+    public function the_smallest_version_is_a_tiny_placeholder_when_used()
+    {
+        $this->usePlaceholders();
+        $image = Image::upload(new File(__DIR__.'/../image.jpg'), 'test.jpg');
+
+        $versions = $image->make()->responsive()->get();
+
+        $this->assertInstanceOf(TinyPlaceholder::class, $versions->last());
+    }
+
+    /** @test **/
+    public function the_placeholder_stretches_to_the_dimensions_of_the_generated_image()
+    {
+        $this->usePlaceholders();
+        $image = Image::upload(new File(__DIR__.'/../image.jpg'), 'test.jpg');
+
+        $versions = $image->make()->responsive()->crop(600, 300)->get();
+
+        $this->assertEquals([600, 300], $versions->last()->getDimensions());
+    }
+
+    /** @test **/
+    public function responsive_factory_casts_to_an_array_suitable_for_api_response()
+    {
+        $this->usePlaceholders();
+        $image = Image::upload(new File(__DIR__.'/../image.jpg'), 'test.jpg');
+
+        $response = $image->make()->responsive()->crop(600, 300)->toArray();
+
+        $this->assertArrayHasKey('src', $response);
+        $this->assertArrayHasKey('srcset', $response);
+        $this->assertArrayHasKey('width', $response);
+    }
+
+    /** @test **/
+    public function responsive_factory_casts_to_json_suitable_for_api_response()
+    {
+        $this->usePlaceholders();
+        $image = Image::upload(new File(__DIR__.'/../image.jpg'), 'test.jpg');
+
+        $factory = $image->make()->responsive()->crop(600, 300);
+
+        // Assert that produces srcset is fairly big
+        $this->assertGreaterThan(2500, strlen(json_encode($factory)));
+    }
 }

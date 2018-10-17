@@ -7,10 +7,10 @@
         }
     },
     "require": {
-        "php": ">=7.0.0",
-        "illuminate/container": "^5.4",
-        "illuminate/filesystem": "^5.4",
-        "illuminate/support": "^5.4",
+        "php": ">=7.1.0",
+        "illuminate/container": "^5.5",
+        "illuminate/filesystem": "^5.5",
+        "illuminate/support": "^5.5",
         "superbalist/laravel-google-cloud-storage": "^1.0",
         "guzzlehttp/guzzle": "~6.0"
     },
@@ -24,9 +24,9 @@
         "rutorika/sortable": "^4.2"
     },
     "suggests": {
-        "illuminate/database": "Required for using extended image-tables functionality",
+        "illuminate/database": "Required for using extended media library functionality",
         "intervention/image": "Intervention image is required to read exif data",
-        "rutorika/sortable": "Required for using extended image-tables functionality"
+        "rutorika/sortable": "Required for using extended media library functionality"
     },
     "autoload-dev": {
         "psr-4": {

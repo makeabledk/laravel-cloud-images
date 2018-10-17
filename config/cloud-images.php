@@ -17,9 +17,8 @@ return [
     'read_exif' => null,
 
     /**
-     * Automatically generate a tiny placeholder
-     * for uploaded images. These will be used
-     * for making responsive images
+     * Automatically generate a tiny placeholder for uploaded images.
+     * These will be used for making responsive images.
      */
     'use_tiny_placeholders' => true
 ];
