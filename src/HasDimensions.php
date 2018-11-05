@@ -57,7 +57,7 @@ trait HasDimensions
         if (count($dimensions) === 1) {
             return $originalWidth >= $originalHeight
                 ? [$width = $dimensions[0], $width / $aspectRatio] // ie. 16:9
-                : [($height = $dimensions[0]) * $originalHeight, $height]; // ie. 9:16
+                : [($height = $dimensions[0]) * $aspectRatio, $height]; // ie. 9:16
         }
 
         return $dimensions;
