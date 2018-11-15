@@ -103,7 +103,7 @@ class ResponsiveImageFactory implements Arrayable, JsonSerializable
     public function getSrcset()
     {
         return $this->get()->map(function (ResponsiveImageVersion $version) {
-            return $version->get().' '.$version->getDisplayWidth().'w';
+            return $version->get().' '.rount($version->getDisplayWidth()).'w';
         })->implode(', ');
     }
 
