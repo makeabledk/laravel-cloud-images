@@ -18,7 +18,7 @@ class GeneratePlaceholdersTest extends TestCase
 
         $image = Image::create([
             'path' => '',
-            'url' => $placeholderGenerator->testImageUrl()
+            'url' => $placeholderGenerator->testImageUrl(),
         ]);
 
         Artisan::call('cloud-images:placeholders');
