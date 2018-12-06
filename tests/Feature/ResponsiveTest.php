@@ -20,7 +20,7 @@ class ResponsiveTest extends TestCase
     {
         $this->expectException(BadMethodCallException::class);
 
-        $factory = new ImageFactory($this->image());
+        $factory = new ImageFactory($this->image()->url);
         $factory->responsive()->get();
     }
 

@@ -9,6 +9,11 @@ class FakeTinyPlaceholder extends TinyPlaceholder
 {
     protected static $testViaHttp = false;
 
+    public function testImageUrl()
+    {
+        return 'https://lh3.googleusercontent.com/nVlGxZ1Gjz_FP_xjbqTFDZtT4mM6LpqNUlqf-FR5yOpuzfYckoFdpS66HBKVJkUCycFqP7pFJkFUKnE88cGj5ZlGrg';
+    }
+
     public function testActualFactory($bool = true)
     {
         static::$testViaHttp = $bool;
@@ -18,7 +23,7 @@ class FakeTinyPlaceholder extends TinyPlaceholder
 
     public function factory()
     {
-        $factory = new class('https://lh3.googleusercontent.com/nVlGxZ1Gjz_FP_xjbqTFDZtT4mM6LpqNUlqf-FR5yOpuzfYckoFdpS66HBKVJkUCycFqP7pFJkFUKnE88cGj5ZlGrg') extends ImageFactory {
+        $factory = new class($this->testImageUrl()) extends ImageFactory {
             public static $shouldMock;
 
             public function getContents()

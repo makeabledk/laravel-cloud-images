@@ -52,6 +52,16 @@ Add a new `gcs` disk to your `filesystems.php` config
 
 See [https://github.com/Superbalist/laravel-google-cloud-storage](https://github.com/Superbalist/laravel-google-cloud-storage) for more details about configuring `filesystems.php`.
 
+### Upgrading from 0.16.x -> 0.17.0 
+
+This release introduces new database fields for responsive images. Please publish migrations and optionally generate placeholders.
+
+```php
+php artisan vendor:publish --provider="Makeable\CloudImages\CloudImagesServiceProvider"
+php artisan migrate
+php artisan cloud-images:placeholders
+```
+
 ## Basic usage
 
 ### Upload an image
@@ -92,8 +102,11 @@ $image = new \Makeable\CloudImages\ImageFactory($url);
 #### Contain to max dimension
 
 ```php
-$image->maxDimension(800)->get();
+$image->maxDimension(150)->get();
 ```
+Example result:
+
+![Example image 1](https://lh3.googleusercontent.com/nVlGxZ1Gjz_FP_xjbqTFDZtT4mM6LpqNUlqf-FR5yOpuzfYckoFdpS66HBKVJkUCycFqP7pFJkFUKnE88cGj5ZlGrg=s150)
 
 #### Crop to dimensions
 
@@ -111,8 +124,20 @@ Example result:
 #### Stretch to dimensions
 
 ```php
-$image->scale(800, 500)->get(); 
+$image->scale(300, 100)->get(); 
 ```
+Example result:
+
+![Example image 1](https://lh3.googleusercontent.com/nVlGxZ1Gjz_FP_xjbqTFDZtT4mM6LpqNUlqf-FR5yOpuzfYckoFdpS66HBKVJkUCycFqP7pFJkFUKnE88cGj5ZlGrg=s-w300-h100)
+
+#### Blur
+
+```php
+$image->blur(15)->get(); // Blur 15% 
+```
+Example result:
+
+![Example image 1](https://lh3.googleusercontent.com/nVlGxZ1Gjz_FP_xjbqTFDZtT4mM6LpqNUlqf-FR5yOpuzfYckoFdpS66HBKVJkUCycFqP7pFJkFUKnE88cGj5ZlGrg=c-w300-h100-fSoften=1,15,0)
 
 #### Custom parameters (advanced)
 
@@ -314,6 +339,41 @@ class ProductImage extends Image
 }
 ```
 In Laravel 5.5, ApiResources would be a great place to append your image sizes as well.
+
+### Responsive images
+
+Given the previous example of a product image, we use the `responsive()` method to generate a collection of responsive image size.
+
+By doing this, we can serve `srcset` optimized images on our website.
+
+```php
+// Returns collection of ImageFactory instances width contiously smaller images
+Product::first()->image()->make()->original()->responsive()->get(); 
+
+// Returns contents of the html srcset attribute
+Product::first()->image()->make()->original()->responsive()->getSrcSet(); 
+
+// Returns an array containing src, srcet and width attribute - especially useful for API responses
+Product::first()->image()->make()->original()->responsive()->toArray(); 
+
+// Returns <img> element with srcset attribute
+Product::first()->image()->make()->original()->responsive()->toHtml(); 
+(string) Product::first()->image()->make()->original()->responsive(); 
+```
+
+Of course all the available transformations are still available for responsive images.
+
+```php
+Product::first()->image()->make()->original()->responsive()->toHtml(); 
+```
+
+The approach for responsive images is heavily inspired by the [spatie/laravel-medialibrary](https://github.com/spatie/laravel-medialibrary) package and offer the same functionality (including placeholders).
+
+Consider [reading their documentation](https://docs.spatie.be/laravel-medialibrary/v7/responsive-images/getting-started-with-responsive-images) for a very thorough explanation of the concept.
+
+Also be sure to checkout their demo here: [Responsive images demo](https://docs.spatie.be/laravel-medialibrary/demo/responsive-images)
+
+Finally consider checking out [ResponsiveTest.php](https://github.com/makeabledk/laravel-cloud-images/blob/master/tests/Feature/ResponsiveTest.php) for more usage examples this package offers.
 
 ### Cleaning up old images
 

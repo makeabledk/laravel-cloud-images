@@ -37,17 +37,38 @@ class GeneratePlaceholders extends Command
 
         Image::all()
             ->tap(function (Collection $images) {
-                $this->comment('Preparing '.$images->count().' placeholders...');
+                $this->comment('Preparing '.$images->count().' images...');
             })
             ->chunk(50)
             ->each(function (Collection $images) {
                 $this->comment('Generating '.$images->count().' placeholders...');
                 $images->each(function (Image $image) {
+                    $this->maybeUpgrade($image);
+
                     $image->tiny_placeholder = $image->placeholder()->create();
                     $image->save();
                 });
             });
 
         $this->info('Finished generating placeholders');
+    }
+
+    /**
+     * If package was upgraded from <= 0.16 it could be missing width, height & size
+     *
+     * @param Image $image
+     */
+    protected function maybeUpgrade(Image $image)
+    {
+        if ($image->width === null) {
+            $original = $image->make()->original()->get();
+            $headers = array_change_key_case(get_headers($original, true));
+
+            $image->size = $headers['content-length'];
+            $image->width = array_get($dim = getimagesize($original), 0);
+            $image->height = array_get($dim, 1);
+
+            $this->comment("Upgraded image {$image->id} - fetched dimensions");
+        }
     }
 }
