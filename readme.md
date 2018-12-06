@@ -150,13 +150,13 @@ $image->original()->param('fv')->get(); // This image will be flipped vertically
 
 Checkout our [makeabledk/appengine-php-imageserver](https://github.com/makeabledk/appengine-php-imageserver) repository for more information on available parameters.
 
-## Extended usage (recommended)
+## Media Library usage (recommended)
 
-While uploading and serving images is all well and good, you will likely need to store the references in your database and attach them to some existing models.
+For the examples so far there has been no need to publish any migrations. You are completely free to only use this package for uploading and retrieving image files from Google. 
 
-You will need to save both the URL as well as the bucket-path in case you ever want to delete them.
+However, while uploading and serving images is all well and good, you will likely need to store the references in your database and attach them to some existing models.
 
-This package provides an easy and opinionated way of doing that.
+This package will likely provide you with most of the functionality you'll ever need for dealing with images in your application.
 
 ### Extended installation
 
@@ -211,7 +211,7 @@ Images will be kept in the order you attach them. However, you are free to reord
 
 ```php
 $product = Product::first();
-$images = $product->images; // In this example we assume an collection of a few images
+$images = $product->images; // In this example we assume a collection of a few images
 
 $product->images()->moveBefore($images->get(2), $images->first());
 ```
@@ -230,13 +230,15 @@ class Product extends Eloquent
 ```
 
 ```php
-$image = Product::first()->image(); // Always returns an Image instance - even if none uploaded
+// Always returns an Image instance - even if none uploaded
+$image = Product::first()->image(); 
 ```
 
 On the `Image` instance you may use the `make()` method to generate the size you need.
 
 ```php
-$url =  $image->make()->cropCenter(500, 400)->get(); // returns NULL if no image attached
+// Returns a url (string) or NULL if no image attached
+$url =  $image->make()->cropCenter(500, 400)->get(); 
 ```
 
 #### Differentiating between image types
@@ -342,7 +344,7 @@ In Laravel 5.5, ApiResources would be a great place to append your image sizes a
 
 ### Responsive images
 
-Given the previous example of a product image, we use the `responsive()` method to generate a collection of responsive image size.
+Given the previous example of a product image, we may use the `responsive()` method to generate a collection of responsive image sizes.
 
 By doing this, we can serve `srcset` optimized images on our website.
 
@@ -406,6 +408,7 @@ We are happy to receive pull requests for additional functionality. Please see [
 ## Credits
 
 - [Rasmus Christoffer Nielsen](https://github.com/rasmuscnielsen)
+- Spatie for their awesome [spatie/laravel-medialibrary](https://github.com/spatie/laravel-medialibrary) 
 - [All Contributors](../../contributors)
 
 ## License
