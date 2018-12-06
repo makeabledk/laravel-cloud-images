@@ -104,4 +104,35 @@ class ResponsiveTest extends TestCase
         // Assert that produces srcset is fairly big
         $this->assertGreaterThan(2500, strlen(json_encode($factory)));
     }
+
+    /** @test **/
+    public function regression__it_always_returns_integers()
+    {
+        $versions = $this->image(null, 1234, 234)->make()->responsive()->maxDimension(123)->get();
+        $this->assertEquals(123, $versions->first()->getWidth());
+        $this->assertEquals(23, $versions->first()->getHeight());
+
+        $versions = $this->image(null, 1234, 234)->make()->responsive()->maxDimension(123.12)->get();
+        $this->assertEquals(123, $versions->first()->getWidth());
+        $this->assertEquals(23, $versions->first()->getHeight());
+    }
+
+    /** @test **/
+    public function regression__it_also_scales_original_sizes_responsively()
+    {
+        // On responsive images we never get =s0 - rather we get the explicit scaling
+        $versions = $this->image(null, 1000, 800)->make()->original()->responsive()->get();
+        $this->assertStringEndsWith('=s-w1000-h800', $versions->get(0)->get());
+        $this->assertStringEndsWith('=s-w836-h668', $versions->get(1)->get());
+
+        // Same thing
+        $versions = $this->image(null, 1000, 800)->make()->responsive()->original()->get();
+        $this->assertStringEndsWith('=s-w1000-h800', $versions->get(0)->get());
+        $this->assertStringEndsWith('=s-w836-h668', $versions->get(1)->get());
+
+        // Same thing
+        $versions = $this->image(null, 1000, 800)->make()->responsive()->get();
+        $this->assertStringEndsWith('=s-w1000-h800', $versions->get(0)->get());
+        $this->assertStringEndsWith('=s-w836-h668', $versions->get(1)->get());
+    }
 }

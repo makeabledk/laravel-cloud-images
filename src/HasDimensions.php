@@ -56,8 +56,8 @@ trait HasDimensions
         // Max dimension specified - convert to actual dimensions
         if (count($dimensions) === 1) {
             return $originalWidth >= $originalHeight
-                ? [$width = $dimensions[0], $width / $aspectRatio] // ie. 16:9
-                : [($height = $dimensions[0]) * $aspectRatio, $height]; // ie. 9:16
+                ? [$width = $dimensions[0], round($width / $aspectRatio)] // ie. 16:9
+                : [round(($height = $dimensions[0]) * $aspectRatio), $height]; // ie. 9:16
         }
 
         return $dimensions;
@@ -78,7 +78,10 @@ trait HasDimensions
      */
     public function setDimensions($width, $height = null)
     {
-        $this->dimensions = [$width, $height];
+        $this->dimensions = [
+            is_null($width) ? null : round($width),
+            is_null($height) ? null : round($height),
+        ];
 
         return $this;
     }

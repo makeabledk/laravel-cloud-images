@@ -65,8 +65,16 @@ class ImageFactory implements ResponsiveImageVersion
             return call_user_func($transformation->bindTo($this), $options);
         }, ['sizing' => [], 'extra' => []]);
 
+        // No sizing transformation has been applied (scale, crop etc)
         if (count(array_get($options, 'sizing', [])) === 0) {
-            return $this->original()->get();
+            // No dimensions has been set whatsoever
+            if (count($this->getDimensions()) === 0) {
+                return $this->original()->get();
+            }
+
+            // Dimensions has been set through setDimensions()
+            // - probably through responsive image class
+            return $this->scale(...$this->getDimensions())->get();
         }
 
         return $this->url
@@ -155,6 +163,15 @@ class ImageFactory implements ResponsiveImageVersion
         return $this
             ->setDimensions(null)
             ->transform(function ($options) {
+                // Explicit dimensions could have been set via setDimensions()
+                // and they may have been set after calling original().
+                // Therefore we'll scale the image instead.
+                if (count($this->getDimensions()) > 0) {
+                    return $this->setSizingOption(['s', 'w'.$this->getWidth(), 'h'.$this->getHeight()], $options);
+                }
+
+                // No dimensions has been set whatsoever
+                // so we can just return the original
                 return $this->setSizingOption(['s0'], $options);
             });
     }
