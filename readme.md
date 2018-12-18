@@ -52,6 +52,16 @@ Add a new `gcs` disk to your `filesystems.php` config
 
 See [https://github.com/Superbalist/laravel-google-cloud-storage](https://github.com/Superbalist/laravel-google-cloud-storage) for more details about configuring `filesystems.php`.
 
+#### Creating a Google Service Account
+
+You can create a service account key file through these steps
+
+- Head to your project's [Google Cloud Console](https://console.cloud.google.com) and locate **IAM** -> **Service accounts**
+- Create a new service account with an appropriate name, ie. `sa-PROJECT-NAME-webapp-ENVIRONMENT`. 
+- On the second step it prompts you to grant permissions. You should as a minimum grant `Storage Object Admin` permissions
+- Finally you should `Create key` and download a json key file. Place it in your `storage` folder and set path in `filesystems.php` accordingly
+
+
 ### Upgrading from 0.16.x -> 0.17.0 
 
 This release introduces new database fields for responsive images. Please publish migrations and optionally generate placeholders.
@@ -366,7 +376,7 @@ Product::first()->image()->make()->original()->responsive()->toHtml();
 Of course all the available transformations are still available for responsive images.
 
 ```php
-Product::first()->image()->make()->original()->responsive()->toHtml(); 
+Product::first()->image()->make()->crop(500, 400)->param('fv')->responsive()->get(); 
 ```
 
 The approach for responsive images is heavily inspired by the [spatie/laravel-medialibrary](https://github.com/spatie/laravel-medialibrary) package and offer the same functionality (including placeholders).
