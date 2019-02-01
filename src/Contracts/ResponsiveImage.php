@@ -7,7 +7,6 @@ use Makeable\CloudImages\TinyPlaceholder;
 
 interface ResponsiveImage
 {
-
     /**
      * @return TinyPlaceholder
      */
@@ -22,5 +21,4 @@ interface ResponsiveImage
      * @return ImageFactory
      */
     public function make();
-
 }
