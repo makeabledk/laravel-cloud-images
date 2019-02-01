@@ -5,6 +5,7 @@ namespace Makeable\CloudImages;
 use BadMethodCallException;
 use Closure;
 use Illuminate\Support\Arr;
+use Makeable\CloudImages\Contracts\ResponsiveImage;
 use Makeable\CloudImages\Contracts\ResponsiveImageVersion;
 use Makeable\CloudImages\Exceptions\FailedDownloadException;
 
@@ -19,7 +20,7 @@ class ImageFactory implements ResponsiveImageVersion
     public $url;
 
     /**
-     * @var Image
+     * @var ResponsiveImage
      */
     protected $image;
 
@@ -37,10 +38,10 @@ class ImageFactory implements ResponsiveImageVersion
     }
 
     /**
-     * @param Image $image
+     * @param ResponsiveImage $image
      * @return ImageFactory
      */
-    public static function make(Image $image)
+    public static function make(ResponsiveImage $image)
     {
         $factory = new static($image->url);
         $factory->image = $image;
