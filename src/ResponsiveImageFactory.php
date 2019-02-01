@@ -6,6 +6,7 @@ use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Collection;
 use JsonSerializable;
 use Makeable\CloudImages\Contracts\DimensionCalculator;
+use Makeable\CloudImages\Contracts\ResponsiveImage;
 use Makeable\CloudImages\Contracts\ResponsiveImageVersion;
 
 /**
@@ -24,10 +25,11 @@ class ResponsiveImageFactory implements Arrayable, JsonSerializable
     protected $factory;
 
     /**
-     * @param Image $image
+     * ResponsiveImageFactory constructor.
+     * @param ResponsiveImage $image
      * @param ImageFactory|null $factory
      */
-    public function __construct(Image $image, ImageFactory $factory = null)
+    public function __construct(ResponsiveImage $image, ImageFactory $factory = null)
     {
         $this->image = $image;
         $this->factory = $factory ?: $image->make();

@@ -2,6 +2,7 @@
 
 namespace Makeable\CloudImages;
 
+use Makeable\CloudImages\Contracts\ResponsiveImage;
 use Makeable\CloudImages\Contracts\ResponsiveImageVersion;
 
 class TinyPlaceholder implements ResponsiveImageVersion
@@ -10,14 +11,14 @@ class TinyPlaceholder implements ResponsiveImageVersion
         ValueCasting;
 
     /**
-     * @var Image
+     * @var ResponsiveImage
      */
     protected $image;
 
     /**
-     * @param Image $image
+     * @param ResponsiveImage $image
      */
-    public function __construct(Image $image)
+    public function __construct(ResponsiveImage $image)
     {
         $this->image = $image;
     }

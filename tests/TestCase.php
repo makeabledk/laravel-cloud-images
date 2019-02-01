@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Storage;
 use Makeable\CloudImages\Client;
 use Makeable\CloudImages\CloudImageFacade;
 use Makeable\CloudImages\CloudImagesServiceProvider;
+use Makeable\CloudImages\Contracts\ResponsiveImage;
 use Makeable\CloudImages\Image;
 use Makeable\CloudImages\Tests\Fakes\FakeGuzzleClient;
 use Makeable\CloudImages\Tests\Fakes\FakeTinyPlaceholder;
@@ -57,6 +58,7 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase
             return new FakeGuzzleClient();
         });
 
+        app()->bind(ResponsiveImage::class, Image::class);
         app()->bind(TinyPlaceholder::class, FakeTinyPlaceholder::class);
 
         app()->singleton(Client::class, function ($app) {
