@@ -52,14 +52,8 @@ class ResponsiveImageFactory implements Arrayable, JsonSerializable
      */
     public function get()
     {
-        $calculator = app()->make(DimensionCalculator::class, [
-            'originalWidth' => $this->image->width,
-            'originalHeight' => $this->image->height,
-            'originalSize' => $this->image->size,
-        ]);
-
-        return $calculator
-            ->calculateDimensions(...$fullDimensions = $this->getDimensions())
+        return $this
+            ->calculateResponsiveDimensions($fullDimensions = $this->getDimensions())
             ->map(function ($dimensions) {
                 return $this->factory->clone()->setDimensions(...$dimensions);
             })
@@ -73,7 +67,9 @@ class ResponsiveImageFactory implements Arrayable, JsonSerializable
      */
     public function getDimensions()
     {
-        return $this->factory->getNormalizedDimensions(...$this->image->getDimensions());
+        return $this->imageExists()
+            ? $this->factory->getNormalizedDimensions(...$this->image->getDimensions())
+            : [];
     }
 
     /**
@@ -127,6 +123,35 @@ class ResponsiveImageFactory implements Arrayable, JsonSerializable
             'srcset' => $this->getSrcset(),
             'width' => array_get($this->getDimensions(), 0),
         ];
+    }
+
+    /**
+     * @param $fullDimensions
+     * @return Collection
+     */
+    protected function calculateResponsiveDimensions($fullDimensions)
+    {
+        return $this->imageExists()
+            ? app()
+                ->make(DimensionCalculator::class, [
+                    'originalWidth' => $this->image->width,
+                    'originalHeight' => $this->image->height,
+                    'originalSize' => $this->image->size,
+                ])
+                ->calculateDimensions(...$fullDimensions)
+            : collect();
+    }
+
+    /**
+     * An ImageFactory may be instantiated with a non-existing Image instance
+     * / NULL object. In this case we do not wish to perform any size
+     * calculations to avoid division-by-zero issues.
+     *
+     * @return bool
+     */
+    protected function imageExists()
+    {
+        return ! (empty($this->image->width) || empty($this->image->height) || empty($this->image->size));
     }
 
     /**

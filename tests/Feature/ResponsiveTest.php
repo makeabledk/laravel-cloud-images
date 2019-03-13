@@ -135,4 +135,21 @@ class ResponsiveTest extends TestCase
         $this->assertStringEndsWith('=s-w1000-h800', $versions->get(0)->get());
         $this->assertStringEndsWith('=s-w836-h668', $versions->get(1)->get());
     }
+
+    /** @test **/
+    public function regression__it_handles_none_existent_images()
+    {
+        $image = new Image();
+        $responsive = $image->make()->responsive()->scale(1000, 1000);
+
+        $this->assertEquals([], $responsive->get()->all());
+        $this->assertNull($responsive->getSrc());
+        $this->assertEquals('', $responsive->getSrcset());
+        $this->assertContains('src=""', $responsive->getHtml());
+        $this->assertEquals([
+            'src' => null,
+            'srcset' => '',
+            'width' => null,
+        ], $responsive->toArray());
+    }
 }
