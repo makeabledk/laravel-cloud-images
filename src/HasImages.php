@@ -36,6 +36,6 @@ trait HasImages
      */
     protected function getImageModelClass()
     {
-        return property_exists($this, 'useImageModel') ? $this->useImageModel : Image::class;
+        return property_exists($this, 'useImageModel') ? $this->useImageModel : get_class(app(Image::class));
     }
 }
