@@ -5,3 +5,4 @@ enabled:
 
 disabled:
   - length_ordered_imports
+  - self_accessor
