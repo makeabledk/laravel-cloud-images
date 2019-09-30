@@ -3,6 +3,7 @@
 namespace Makeable\CloudImages;
 
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use JsonSerializable;
 use Makeable\CloudImages\Contracts\DimensionCalculator;
@@ -121,7 +122,7 @@ class ResponsiveImageFactory implements Arrayable, JsonSerializable
         return [
             'src' => $this->getSrc(),
             'srcset' => $this->getSrcset(),
-            'width' => array_get($this->getDimensions(), 0),
+            'width' => Arr::get($this->getDimensions(), 0),
         ];
     }
 

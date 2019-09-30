@@ -6,6 +6,7 @@ use BadMethodCallException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\File;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Makeable\CloudImages\Image;
 use Makeable\CloudImages\ImageFactory;
 use Makeable\CloudImages\Tests\TestCase;
@@ -51,11 +52,11 @@ class ResponsiveTest extends TestCase
 
         $full = $versions->first();
         $this->assertEquals([500, 300], $full->getDimensions());
-        $this->assertEquals('n-w500-h300-fv', str_after($full->get(), '='));
+        $this->assertEquals('n-w500-h300-fv', Str::after($full->get(), '='));
 
         $smallest = $versions->last();
         $this->assertEquals([143, 85], $smallest->getDimensions());
-        $this->assertEquals('n-w143-h85-fv', str_after($smallest->get(), '='));
+        $this->assertEquals('n-w143-h85-fv', Str::after($smallest->get(), '='));
     }
 
     /** @test **/

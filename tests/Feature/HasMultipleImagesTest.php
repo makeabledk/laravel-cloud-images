@@ -25,7 +25,7 @@ class HasMultipleImagesTest extends TestCase
     /** @test **/
     public function it_sorts_attachments_by_order()
     {
-        list($product, $image1, $image2) = [Product::create(), $this->image(), $this->image()];
+        [$product, $image1, $image2] = [Product::create(), $this->image(), $this->image()];
 
         $product->images()->sync([$image2->id, $image1->id]);
 
@@ -47,7 +47,7 @@ class HasMultipleImagesTest extends TestCase
     /** @test **/
     public function it_finds_attachables_for_a_given_model()
     {
-        list($image, $product1, $product2) = [$this->image(), Product::create(), Product::create()];
+        [$image, $product1, $product2] = [$this->image(), Product::create(), Product::create()];
 
         $product1->images()->save($image);
         $product2->images()->save($image);
@@ -62,7 +62,7 @@ class HasMultipleImagesTest extends TestCase
             protected $useImageModel = ProductImage::class;
         };
 
-        list($product, $image) = [$product::create(), $this->image()];
+        [$product, $image] = [$product::create(), $this->image()];
 
         $product->images()->save($image);
 

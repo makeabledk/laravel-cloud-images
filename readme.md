@@ -23,22 +23,6 @@ You can install this package via composer:
 composer require makeabledk/laravel-cloud-images
 ```
 
-On Laravel versions < 5.5, you must include the service provider and (optionally) register the facade in you `config/app.php`:
-
-```php
-'providers' => [
-...
-    \Makeable\CloudImages\CloudImagesServiceProvider::class,
-]
-``` 
-
-```php
-'aliases' => [
-...
-    'CloudImage' => \Makeable\CloudImages\CloudImageFacade::class,
-]
-```
-
 Add a new `gcs` disk to your `filesystems.php` config
 
 ```php
