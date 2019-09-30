@@ -46,7 +46,7 @@ class Image extends Model implements ResponsiveImage
     public static function boot()
     {
         parent::boot();
-        static::deleting(function (Image $image) {
+        static::deleting(function (self $image) {
             dispatch(new DeleteCloudImage($image->path));
         });
     }

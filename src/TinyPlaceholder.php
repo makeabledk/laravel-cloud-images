@@ -48,7 +48,7 @@ class TinyPlaceholder implements ResponsiveImageVersion
         // We need to resolve the normalized dimensions
         // as the dimensions may have been specified
         // explicitly using setDimensions()
-        list($width, $height) = $this->getNormalizedDimensions(...$this->image->getDimensions());
+        [$width, $height] = $this->getNormalizedDimensions(...$this->image->getDimensions());
 
         $svg = view('cloud-images::placeholder-svg', [
             'originalImageWidth' => $width,
