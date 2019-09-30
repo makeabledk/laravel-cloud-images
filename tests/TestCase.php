@@ -14,7 +14,7 @@ use Makeable\CloudImages\TinyPlaceholder;
 
 class TestCase extends \Illuminate\Foundation\Testing\TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

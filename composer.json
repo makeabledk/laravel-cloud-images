@@ -12,7 +12,7 @@
         "illuminate/filesystem": "^5.5|^6.0",
         "illuminate/support": "^5.5|^6.0",
         "superbalist/laravel-google-cloud-storage": "^1.0|^2.2",
-        "guzzlehttp/guzzle": "~6.0"
+        "guzzlehttp/guzzle": "^6.3"
     },
     "require-dev": {
         "codedungeon/phpunit-result-printer": "^0.26.0",
@@ -23,7 +23,8 @@
         "mockery/mockery": "^1.0",
         "rutorika/sortable": "^4.2|^6.0",
         "phpunit/phpunit": "^6.0|^7.0|^8.0",
-        "fzaninotto/faker": "^1.4"
+        "fzaninotto/faker": "^1.4",
+        "league/flysystem": "^1.0.8"
     },
     "suggest": {
         "illuminate/database": "Required for using extended media library functionality",
