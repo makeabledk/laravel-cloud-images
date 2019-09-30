@@ -67,7 +67,7 @@ class ImageFactory implements ResponsiveImageVersion
         }, ['sizing' => [], 'extra' => []]);
 
         // No sizing transformation has been applied (scale, crop etc)
-        if (count(array_get($options, 'sizing', [])) === 0) {
+        if (count(Arr::get($options, 'sizing', [])) === 0) {
             // No dimensions has been set whatsoever
             if (count($this->getDimensions()) === 0) {
                 return $this->original()->get();
@@ -231,7 +231,7 @@ class ImageFactory implements ResponsiveImageVersion
      */
     protected function addExtraOption($value, $options)
     {
-        $options['extra'] = array_merge(array_get($options, 'extra', []), Arr::wrap($value));
+        $options['extra'] = array_merge(Arr::get($options, 'extra', []), Arr::wrap($value));
 
         return $options;
     }

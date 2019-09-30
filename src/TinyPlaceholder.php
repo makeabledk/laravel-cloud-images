@@ -2,6 +2,7 @@
 
 namespace Makeable\CloudImages;
 
+use Illuminate\Support\Arr;
 use Makeable\CloudImages\Contracts\ResponsiveImage;
 use Makeable\CloudImages\Contracts\ResponsiveImageVersion;
 
@@ -67,6 +68,6 @@ class TinyPlaceholder implements ResponsiveImageVersion
      */
     public function getDisplayWidth()
     {
-        return array_get($this->factory()->getNormalizedDimensions(...$this->image->getDimensions()), 0);
+        return Arr::get($this->factory()->getNormalizedDimensions(...$this->image->getDimensions()), 0);
     }
 }

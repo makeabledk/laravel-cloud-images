@@ -5,6 +5,7 @@ namespace Makeable\CloudImages;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\File;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Arr;
 use Makeable\CloudImages\Contracts\ResponsiveImage;
 use Makeable\CloudImages\Jobs\DeleteCloudImage;
 
@@ -65,8 +66,8 @@ class Image extends Model implements ResponsiveImage
             'path' => $uploaded->path,
             'url' => $uploaded->url,
             'size' => $file->getSize(),
-            'width' => array_get($dim = getimagesize($file), 0),
-            'height' => array_get($dim, 1),
+            'width' => Arr::get($dim = getimagesize($file), 0),
+            'height' => Arr::get($dim, 1),
         ]);
 
         if (config('cloud-images.read_exif')) {

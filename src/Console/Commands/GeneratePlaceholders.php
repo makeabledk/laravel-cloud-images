@@ -3,6 +3,7 @@
 namespace Makeable\CloudImages\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Makeable\CloudImages\Image;
 
@@ -65,8 +66,8 @@ class GeneratePlaceholders extends Command
             $headers = array_change_key_case(get_headers($original, true));
 
             $image->size = $headers['content-length'];
-            $image->width = array_get($dim = getimagesize($original), 0);
-            $image->height = array_get($dim, 1);
+            $image->width = Arr::get($dim = getimagesize($original), 0);
+            $image->height = Arr::get($dim, 1);
 
             $this->comment("Upgraded image {$image->id} - fetched dimensions");
         }

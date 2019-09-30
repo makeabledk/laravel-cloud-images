@@ -24,7 +24,7 @@ trait HasDimensions
      */
     public function getHeight()
     {
-        return array_get($this->getDimensions(), 1);
+        return Arr::get($this->getDimensions(), 1);
     }
 
     /**
@@ -68,7 +68,7 @@ trait HasDimensions
      */
     public function getWidth()
     {
-        return array_get($this->getDimensions(), 0);
+        return Arr::get($this->getDimensions(), 0);
     }
 
     /**
