@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Makeable\CloudImages\Nova\Fields;
 
 use Illuminate\Database\Eloquent\Model;
@@ -35,11 +34,13 @@ class CloudImage extends ImageField
 
         $this->store(function (Request $request, Model $model) {
             $model->{$this->attribute}->replaceWith(Image::upload($request->file($this->attribute)));
+
             return true;
         });
 
         $this->delete(function (Request $request, $model) {
             $model->{$this->attribute}->delete();
+
             return true;
         });
     }
