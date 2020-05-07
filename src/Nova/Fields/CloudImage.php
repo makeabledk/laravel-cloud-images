@@ -5,6 +5,7 @@ namespace Makeable\CloudImages\Nova\Fields;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Nova\Fields\Image as ImageField;
 use Makeable\CloudImages\Image;
+use Illuminate\Http\Request;
 
 class CloudImage extends ImageField
 {
