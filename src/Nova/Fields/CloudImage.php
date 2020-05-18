@@ -3,6 +3,7 @@
 namespace Makeable\CloudImages\Nova\Fields;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Image as ImageField;
 use Makeable\CloudImages\Image;
 
