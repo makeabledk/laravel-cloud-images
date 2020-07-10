@@ -34,9 +34,9 @@ class CloudImage extends ImageField
         });
 
         $this->store(function (Request $request, Model $model) {
-            $model->{$this->attribute}->replaceWith(Image::upload($request->file($this->attribute)));
-
-            return true;
+            return function () use ($request, $model) {
+                $model->{$this->attribute}->replaceWith(Image::upload($request->file($this->attribute)));
+            };
         });
 
         $this->delete(function (Request $request, $model) {
