@@ -146,7 +146,7 @@ class ResponsiveTest extends TestCase
         $this->assertEquals([], $responsive->get()->all());
         $this->assertNull($responsive->getSrc());
         $this->assertEquals('', $responsive->getSrcset());
-        $this->assertContains('src=""', $responsive->getHtml());
+        $this->assertStringContainsString('src=""', $responsive->getHtml());
         $this->assertEquals([
             'src' => null,
             'srcset' => '',

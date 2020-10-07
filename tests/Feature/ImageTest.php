@@ -69,9 +69,9 @@ class ImageTest extends TestCase
     {
         $image = Image::upload(new File(__DIR__.'/../image.jpg'), 'test.jpg');
 
-        $this->assertContains('<img', $html = (string) $image);
-        $this->assertContains('srcset', $html = (string) $image);
-        $this->assertNotContains('sizes', $html = (string) $image);
+        $this->assertStringContainsString('<img', $html = (string) $image);
+        $this->assertStringContainsString('srcset', $html = (string) $image);
+        $this->assertStringNotContainsString('sizes', $html = (string) $image);
     }
 
     /** @test **/
@@ -81,9 +81,9 @@ class ImageTest extends TestCase
 
         $image = Image::upload(new File(__DIR__.'/../image.jpg'), 'test.jpg');
 
-        $this->assertContains('<img', $html = (string) $image);
-        $this->assertContains('srcset', $html = (string) $image);
-        $this->assertContains('sizes', $html = (string) $image);
-        $this->assertContains('onload', $html = (string) $image);
+        $this->assertStringContainsString('<img', $html = (string) $image);
+        $this->assertStringContainsString('srcset', $html = (string) $image);
+        $this->assertStringContainsString('sizes', $html = (string) $image);
+        $this->assertStringContainsString('onload', $html = (string) $image);
     }
 }
