@@ -9,10 +9,6 @@ cache:
 matrix:
   fast_finish: true
   include:
-    - php: 7.2
-      env: LARAVEL='6.*' PHPUNIT='^8.3' COMPOSER_FLAGS='--prefer-lowest'
-    - php: 7.2
-      env: LARAVEL='6.*' PHPUNIT='^8.3' COMPOSER_FLAGS='--prefer-stable'
     - php: 7.3
       env: LARAVEL='6.*' PHPUNIT='^8.3' COMPOSER_FLAGS='--prefer-lowest'
     - php: 7.3
