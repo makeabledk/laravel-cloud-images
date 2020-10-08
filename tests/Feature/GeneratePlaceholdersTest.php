@@ -25,7 +25,7 @@ class GeneratePlaceholdersTest extends TestCase
 
         // It generates placeholder
         $this->assertNotNull($placeholder = $image->refresh()->tiny_placeholder);
-        $this->assertContains('base64', $placeholder);
+        $this->assertStringContainsString('base64', $placeholder);
 
         // It sets dimensions when NULL (for upgrading versions)
         $this->assertNotNull($image->width);
