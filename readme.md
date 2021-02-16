@@ -2,7 +2,7 @@
 # Laravel Cloud Images
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/makeabledk/laravel-cloud-images.svg?style=flat-square)](https://packagist.org/packages/makeabledk/laravel-cloud-images)
-[![Build Status](https://img.shields.io/travis/makeabledk/laravel-cloud-images/master.svg?style=flat-square)](https://travis-ci.org/makeabledk/laravel-cloud-images)
+[![Build Status](https://img.shields.io/github/workflow/status/makeabledk/laravel-cloud-images/Run%20tests?label=Tests)](https://github.com/makeabledk/laravel-cloud-images/actions)
 [![StyleCI](https://styleci.io/repos/109057978/shield?branch=master)](https://styleci.io/repos/109057978)
 
 This package provides a convenient to manage Google App Engine Images API through Laravel.
