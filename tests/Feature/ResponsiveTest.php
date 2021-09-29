@@ -92,6 +92,7 @@ class ResponsiveTest extends TestCase
         $this->assertArrayHasKey('src', $response);
         $this->assertArrayHasKey('srcset', $response);
         $this->assertArrayHasKey('width', $response);
+        $this->assertArrayHasKey('height', $response);
     }
 
     /** @test **/
@@ -151,6 +152,7 @@ class ResponsiveTest extends TestCase
             'src' => null,
             'srcset' => '',
             'width' => null,
+            'height' => null,
         ], $responsive->toArray());
     }
 }

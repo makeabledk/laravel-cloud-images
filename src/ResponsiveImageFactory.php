@@ -122,7 +122,8 @@ class ResponsiveImageFactory implements Arrayable, JsonSerializable
         return [
             'src' => $this->getSrc(),
             'srcset' => $this->getSrcset(),
-            'width' => Arr::get($this->getDimensions(), 0),
+            'width' => Arr::get($dimensions = $this->getDimensions(), 0),
+            'height' => Arr::get($dimensions, 1),
         ];
     }
 
