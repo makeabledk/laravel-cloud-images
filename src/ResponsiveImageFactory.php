@@ -27,8 +27,9 @@ class ResponsiveImageFactory implements Arrayable, JsonSerializable
 
     /**
      * ResponsiveImageFactory constructor.
-     * @param ResponsiveImage $image
-     * @param ImageFactory|null $factory
+     *
+     * @param  ResponsiveImage  $image
+     * @param  ImageFactory|null  $factory
      */
     public function __construct(ResponsiveImage $image, ImageFactory $factory = null)
     {
@@ -74,7 +75,7 @@ class ResponsiveImageFactory implements Arrayable, JsonSerializable
     }
 
     /**
-     * @param array $attributes
+     * @param  array  $attributes
      * @return string
      */
     public function getHtml(array $attributes = [])
@@ -165,7 +166,7 @@ class ResponsiveImageFactory implements Arrayable, JsonSerializable
     }
 
     /**
-     * @param array $attributes
+     * @param  array  $attributes
      * @return string
      */
     protected function attributesToString(array $attributes)

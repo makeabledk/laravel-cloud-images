@@ -57,7 +57,7 @@ class GeneratePlaceholders extends Command
     /**
      * If package was upgraded from <= 0.16 it could be missing width, height & size.
      *
-     * @param Image $image
+     * @param  Image  $image
      */
     protected function maybeUpgrade(Image $image)
     {

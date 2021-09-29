@@ -64,7 +64,7 @@ class ImageFactoryTest extends TestCase
     }
 
     /**
-     * @param string $params
+     * @param  string  $params
      * @return string
      */
     protected function url($params = null)

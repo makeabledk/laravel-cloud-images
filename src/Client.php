@@ -44,6 +44,7 @@ class Client
     /**
      * @param $path
      * @return bool
+     *
      * @throws FailedDeletionException
      */
     public function delete($path)
@@ -62,10 +63,11 @@ class Client
     }
 
     /**
-     * @param \Illuminate\Http\File|\Illuminate\Http\UploadedFile $image
-     * @param null $path
-     * @param string $visibility
+     * @param  \Illuminate\Http\File|\Illuminate\Http\UploadedFile  $image
+     * @param  null  $path
+     * @param  string  $visibility
      * @return object
+     *
      * @throws FailedUploadException
      */
     public function upload($image, $path = null, $visibility = null)

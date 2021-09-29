@@ -10,8 +10,8 @@ use Makeable\CloudImages\Image;
 class CloudImage extends ImageField
 {
     /**
-     * @param string $name
-     * @param string|null $attribute
+     * @param  string  $name
+     * @param  string|null  $attribute
      * @return void
      */
     public function __construct($name, $attribute = null)

@@ -69,7 +69,7 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase
     }
 
     /**
-     * @param int $status
+     * @param  int  $status
      */
     public function failHttpRequest($status = 400)
     {
@@ -79,10 +79,10 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase
     }
 
     /**
-     * @param string $path
-     * @param int $width
-     * @param int $height
-     * @param int $size
+     * @param  string  $path
+     * @param  int  $width
+     * @param  int  $height
+     * @param  int  $size
      * @return Image
      */
     protected function image($path = null, $width = 1000, $height = 1000, $size = null)
@@ -115,7 +115,7 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase
     }
 
     /**
-     * @param bool $bool
+     * @param  bool  $bool
      * @return FakeTinyPlaceholder
      */
     protected function usePlaceholders($bool = true)
