@@ -53,9 +53,9 @@ class Image extends Model implements ResponsiveImage
     }
 
     /**
-     * @param File|UploadedFile $file
-     * @param string | null $path
-     * @param string | null $visibility
+     * @param  File|UploadedFile  $file
+     * @param  string | null  $path
+     * @param  string | null  $visibility
      * @return Image
      */
     public static function upload($file, $path = null, $visibility = null)
@@ -124,7 +124,7 @@ class Image extends Model implements ResponsiveImage
     }
 
     /**
-     * @param Image $image
+     * @param  Image  $image
      * @return Image
      */
     public function replaceWith(self $image)
@@ -141,7 +141,7 @@ class Image extends Model implements ResponsiveImage
 
     /**
      * @param $attachable
-     * @param null $tag
+     * @param  null  $tag
      * @return $this
      */
     public function reserveFor($attachable, $tag = null)
@@ -162,6 +162,7 @@ class Image extends Model implements ResponsiveImage
 
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View|string
+     *
      * @throws \Throwable
      */
     public function __toString()

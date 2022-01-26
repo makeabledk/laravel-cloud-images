@@ -23,8 +23,8 @@ class FileSizeOptimizedDimensionCalculator implements DimensionCalculator
     }
 
     /**
-     * @param int $width
-     * @param int $height
+     * @param  int  $width
+     * @param  int  $height
      * @return Collection
      */
     public function calculateDimensions($width, $height): Collection
@@ -50,8 +50,8 @@ class FileSizeOptimizedDimensionCalculator implements DimensionCalculator
     }
 
     /**
-     * @param int $predictedFileSize
-     * @param int $newWidth
+     * @param  int  $predictedFileSize
+     * @param  int  $newWidth
      * @return bool
      */
     protected function finishedCalculating(int $predictedFileSize, int $newWidth): bool

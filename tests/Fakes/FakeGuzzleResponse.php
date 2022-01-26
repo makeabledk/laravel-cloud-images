@@ -16,6 +16,7 @@ class FakeGuzzleResponse
 
     /**
      * FakeGuzzleClient constructor.
+     *
      * @param $client
      * @param $request
      */

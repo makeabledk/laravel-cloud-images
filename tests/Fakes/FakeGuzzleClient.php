@@ -11,6 +11,7 @@ class FakeGuzzleClient
 
     /**
      * FakeGuzzleClient constructor.
+     *
      * @param $status
      */
     public function __construct($status = 200)
