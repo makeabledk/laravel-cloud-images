@@ -7,23 +7,21 @@
         }
     },
     "require": {
-        "php": ">=7.3.0|8.*",
-        "illuminate/container": "6.*|7.*|8.*",
-        "illuminate/filesystem": "6.*|7.*|8.*",
-        "illuminate/support": "6.*|7.*|8.*",
-        "superbalist/laravel-google-cloud-storage": "^1.0|^2.2",
-        "guzzlehttp/guzzle": "^6.3|^7.0.1"
+        "php": "^8.0",
+        "illuminate/container": "^8.80|9.*",
+        "illuminate/filesystem": "^8.80|9.*",
+        "illuminate/support": "^8.80|9.*",
+        "superbalist/laravel-google-cloud-storage": "^2.2",
+        "guzzlehttp/guzzle": "^7.0"
     },
     "require-dev": {
         "codedungeon/phpunit-result-printer": "^0.30.0",
-        "laravel/laravel": "6.*|7.*|8.*",
+        "laravel/laravel": "8.*|9.*",
         "intervention/image": "^2.4",
         "doctrine/dbal": "^3.0",
-        "mockery/mockery": "^1.4.2",
-        "rutorika/sortable": "^4.2|^6.0|^7.0",
-        "phpunit/phpunit": "8.*|9.*",
-        "fzaninotto/faker": "^1.4",
-        "league/flysystem": "^1.0.8"
+        "mockery/mockery": "^1.5",
+        "rutorika/sortable": "8.*",
+        "phpunit/phpunit": "9.*",
     },
     "suggest": {
         "illuminate/database": "Required for using extended media library functionality",
