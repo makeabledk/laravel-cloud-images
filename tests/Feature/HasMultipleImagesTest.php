@@ -58,7 +58,8 @@ class HasMultipleImagesTest extends TestCase
     /** @test **/
     public function it_uses_the_specified_image_class_property_for_the_relationship()
     {
-        $product = new class extends Product {
+        $product = new class extends Product
+        {
             protected $useImageModel = ProductImage::class;
         };
 

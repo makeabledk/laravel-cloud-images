@@ -17,7 +17,7 @@ class TinyPlaceholder implements ResponsiveImageVersion
     protected $image;
 
     /**
-     * @param ResponsiveImage $image
+     * @param  ResponsiveImage  $image
      */
     public function __construct(ResponsiveImage $image)
     {
@@ -34,6 +34,7 @@ class TinyPlaceholder implements ResponsiveImageVersion
 
     /**
      * @return string
+     *
      * @throws \Throwable
      */
     public function create()

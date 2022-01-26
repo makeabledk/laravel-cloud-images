@@ -38,7 +38,7 @@ class ImageFactory implements ResponsiveImageVersion
     }
 
     /**
-     * @param ResponsiveImage $image
+     * @param  ResponsiveImage  $image
      * @return ImageFactory
      */
     public static function make(ResponsiveImage $image)
@@ -85,6 +85,7 @@ class ImageFactory implements ResponsiveImageVersion
 
     /**
      * @return ResponsiveImageFactory
+     *
      * @throws \Throwable
      */
     public function responsive()
@@ -96,6 +97,7 @@ class ImageFactory implements ResponsiveImageVersion
 
     /**
      * @return string
+     *
      * @throws \Throwable
      */
     public function getContents()
@@ -110,7 +112,7 @@ class ImageFactory implements ResponsiveImageVersion
     // _________________________________________________________________________________________________________________
 
     /**
-     * @param int $percentage
+     * @param  int  $percentage
      * @return ImageFactory
      */
     public function blur($percentage = 5)
@@ -121,7 +123,7 @@ class ImageFactory implements ResponsiveImageVersion
     /**
      * @param $width
      * @param $height
-     * @param string $mode
+     * @param  string  $mode
      * @return ImageFactory
      */
     public function crop($width, $height, $mode = 'c')
@@ -213,7 +215,7 @@ class ImageFactory implements ResponsiveImageVersion
     }
 
     /**
-     * @param Closure $transformation
+     * @param  Closure  $transformation
      * @return $this
      */
     protected function transform(Closure $transformation)
@@ -237,8 +239,8 @@ class ImageFactory implements ResponsiveImageVersion
     }
 
     /**
-     * @param mixed $value
-     * @param array $options
+     * @param  mixed  $value
+     * @param  array  $options
      * @return array
      */
     protected function setSizingOption($value, $options)
