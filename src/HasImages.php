@@ -19,7 +19,7 @@ trait HasImages
     }
 
     /**
-     * @param null $tag
+     * @param  null  $tag
      * @return Image
      */
     public function image($tag = null)

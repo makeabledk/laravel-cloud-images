@@ -23,7 +23,8 @@ class FakeTinyPlaceholder extends TinyPlaceholder
 
     public function factory()
     {
-        $factory = new class($this->testImageUrl()) extends ImageFactory {
+        $factory = new class($this->testImageUrl()) extends ImageFactory
+        {
             public static $shouldMock;
 
             public function getContents()

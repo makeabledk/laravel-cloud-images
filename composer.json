@@ -21,7 +21,7 @@
         "doctrine/dbal": "^3.0",
         "mockery/mockery": "^1.5",
         "rutorika/sortable": "8.*",
-        "phpunit/phpunit": "9.*",
+        "phpunit/phpunit": "9.*"
     },
     "suggest": {
         "illuminate/database": "Required for using extended media library functionality",

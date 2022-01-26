@@ -21,7 +21,7 @@ class DeleteCloudImage implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param string $path
+     * @param  string  $path
      */
     public function __construct($path)
     {
@@ -31,7 +31,7 @@ class DeleteCloudImage implements ShouldQueue
     /**
      * Execute the job.
      *
-     * @param Client $client
+     * @param  Client  $client
      */
     public function handle(Client $client)
     {

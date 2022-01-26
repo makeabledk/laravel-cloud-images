@@ -14,8 +14,8 @@ interface DimensionCalculator
     public function __construct($originalWidth, $originalHeight, $originalSize);
 
     /**
-     * @param int $width
-     * @param int $height
+     * @param  int  $width
+     * @param  int  $height
      * @return Collection
      */
     public function calculateDimensions($width, $height): Collection;

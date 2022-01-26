@@ -73,7 +73,7 @@ trait HasDimensions
 
     /**
      * @param $width
-     * @param null $height
+     * @param  null  $height
      * @return $this
      */
     public function setDimensions($width, $height = null)
