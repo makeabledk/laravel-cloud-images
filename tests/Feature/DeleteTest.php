@@ -27,16 +27,6 @@ class DeleteTest extends TestCase
     }
 
     /** @test **/
-    public function it_throws_exception_on_failed_bucket_deletion()
-    {
-        $this->expectException(FailedDeletionException::class);
-
-        // test.jpg does not exist in storage
-
-        CloudImageFacade::delete('test.jpg');
-    }
-
-    /** @test **/
     public function it_throws_exception_on_failed_http_request()
     {
         $this->putFile('test.jpg');

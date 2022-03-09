@@ -7,7 +7,7 @@ use Intervention\Image\ImageServiceProvider;
 use Makeable\CloudImages\Console\Commands\Cleanup;
 use Makeable\CloudImages\Console\Commands\GeneratePlaceholders;
 use Makeable\CloudImages\Contracts\DimensionCalculator;
-use Superbalist\LaravelGoogleCloudStorage\GoogleCloudStorageServiceProvider;
+use Spatie\GoogleCloudStorage\GoogleCloudStorageServiceProvider;
 
 class CloudImagesServiceProvider extends ServiceProvider
 {
