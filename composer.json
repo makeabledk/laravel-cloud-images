@@ -11,7 +11,7 @@
         "illuminate/container": "^8.80|9.*",
         "illuminate/filesystem": "^8.80|9.*",
         "illuminate/support": "^8.80|9.*",
-        "superbalist/laravel-google-cloud-storage": "^2.2",
+        "spatie/laravel-google-cloud-storage": "^1.0|^2.0",
         "guzzlehttp/guzzle": "^7.0"
     },
     "require-dev": {
@@ -24,7 +24,6 @@
         "phpunit/phpunit": "9.*"
     },
     "suggest": {
-        "illuminate/database": "Required for using extended media library functionality",
         "intervention/image": "Intervention image is required to read exif data",
         "rutorika/sortable": "Required for using extended media library functionality"
     },

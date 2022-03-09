@@ -29,12 +29,12 @@ Add a new `gcs` disk to your `filesystems.php` config
 'gcs' => [
     'driver' => 'gcs',
     'project_id' => env('GOOGLE_CLOUD_PROJECT_ID', 'your-project-id'),
-    'key_file' => env('GOOGLE_CLOUD_KEY_FILE', '/path/to/service-account.json'), 
+    'key_file_path' => env('GOOGLE_CLOUD_KEY_FILE', '/path/to/service-account.json'), 
     'bucket' => env('GOOGLE_CLOUD_STORAGE_BUCKET', 'your-bucket'),
 ],
 ```
 
-See [https://github.com/Superbalist/laravel-google-cloud-storage](https://github.com/Superbalist/laravel-google-cloud-storage) for more details about configuring `filesystems.php`.
+See [https://github.com/spatie/laravel-google-cloud-storage](https://github.com/spatie/laravel-google-cloud-storage) for more details about configuring `filesystems.php`.
 
 #### Creating a Google Service Account
 
@@ -55,6 +55,14 @@ php artisan vendor:publish --provider="Makeable\CloudImages\CloudImagesServicePr
 php artisan migrate
 php artisan cloud-images:placeholders
 ```
+
+### Upgrading from 2.x --> 3.x
+
+Starting with version 3 this package uses `spatie/laravel-google-cloud-storage` instead of `superbalist/laravel-google-cloud-storage`.
+
+- Please ensure you refer to the configuration options in [laravel-google-cloud-storage#installation](https://github.com/spatie/laravel-google-cloud-storage#installation).
+- Specifically make sure you change your disk configuration in `config/filesystems.php` @ `gcs.key_file`  --> `gcs.key_file_path`.
+
 
 ## Basic usage
 
