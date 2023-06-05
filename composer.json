@@ -8,9 +8,9 @@
     },
     "require": {
         "php": "^8.0",
-        "illuminate/container": "^8.80|9.*",
-        "illuminate/filesystem": "^8.80|9.*",
-        "illuminate/support": "^8.80|9.*",
+        "illuminate/container": "^8.80|9.*|10.*",
+        "illuminate/filesystem": "^8.80|9.*|10.*",
+        "illuminate/support": "^8.80|9.*|10.*",
         "spatie/laravel-google-cloud-storage": "^1.0|^2.0",
         "guzzlehttp/guzzle": "^7.0"
     },
