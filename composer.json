@@ -8,20 +8,19 @@
     },
     "require": {
         "php": "^8.0",
-        "illuminate/container": "^8.80|9.*|10.*",
-        "illuminate/filesystem": "^8.80|9.*|10.*",
-        "illuminate/support": "^8.80|9.*|10.*",
+        "illuminate/container": "^8.80|9.*|10.*|11.*",
+        "illuminate/filesystem": "^8.80|9.*|10.*|11.*",
+        "illuminate/support": "^8.80|9.*|10.*|11.*",
         "spatie/laravel-google-cloud-storage": "^1.0|^2.0",
         "guzzlehttp/guzzle": "^7.0"
     },
     "require-dev": {
         "codedungeon/phpunit-result-printer": "^0.30.0",
-        "laravel/laravel": "8.*|9.*",
+        "laravel/laravel": "8.*|9.*|10.*|11.*",
         "intervention/image": "^2.4",
-        "doctrine/dbal": "^3.0",
         "mockery/mockery": "^1.5",
         "rutorika/sortable": "^8.0|^9.0",
-        "phpunit/phpunit": "9.*"
+        "phpunit/phpunit": "9.*|10.*"
     },
     "suggest": {
         "intervention/image": "Intervention image is required to read exif data",
