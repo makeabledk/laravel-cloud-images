@@ -30,7 +30,7 @@ class ImageFactory implements ResponsiveImageVersion
     protected $transformations = [];
 
     /**
-     * @param $url
+     * @param  $url
      */
     public function __construct($url)
     {
@@ -121,8 +121,8 @@ class ImageFactory implements ResponsiveImageVersion
     }
 
     /**
-     * @param $width
-     * @param $height
+     * @param  $width
+     * @param  $height
      * @param  string  $mode
      * @return ImageFactory
      */
@@ -136,8 +136,8 @@ class ImageFactory implements ResponsiveImageVersion
     }
 
     /**
-     * @param $width
-     * @param $height
+     * @param  $width
+     * @param  $height
      * @return ImageFactory
      */
     public function cropCenter($width, $height)
@@ -146,7 +146,7 @@ class ImageFactory implements ResponsiveImageVersion
     }
 
     /**
-     * @param $max
+     * @param  $max
      * @return ImageFactory
      */
     public function maxDimension($max)
@@ -180,7 +180,7 @@ class ImageFactory implements ResponsiveImageVersion
     }
 
     /**
-     * @param $value
+     * @param  $value
      * @return ImageFactory
      */
     public function param($value)
@@ -191,8 +191,8 @@ class ImageFactory implements ResponsiveImageVersion
     }
 
     /**
-     * @param $width
-     * @param $height
+     * @param  $width
+     * @param  $height
      * @return ImageFactory
      */
     public function scale($width, $height)
@@ -226,9 +226,9 @@ class ImageFactory implements ResponsiveImageVersion
     }
 
     /**
-     * @param $option
-     * @param $value
-     * @param $options
+     * @param  $option
+     * @param  $value
+     * @param  $options
      * @return $options
      */
     protected function addExtraOption($value, $options)

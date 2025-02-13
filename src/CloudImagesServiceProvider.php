@@ -70,7 +70,7 @@ class CloudImagesServiceProvider extends ServiceProvider
     /**
      * Publish a given migration stub.
      *
-     * @param $file
+     * @param  $file
      */
     protected function publishMigration($file)
     {
