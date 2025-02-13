@@ -48,7 +48,7 @@ class DeleteTest extends TestCase
     }
 
     /**
-     * @param $name
+     * @param  $name
      */
     private function putFile($name)
     {

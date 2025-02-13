@@ -13,9 +13,9 @@ class FileSizeOptimizedDimensionCalculator implements DimensionCalculator
     protected $pixelPrice;
 
     /**
-     * @param $originalWidth
-     * @param $originalHeight
-     * @param $originalSize
+     * @param  $originalWidth
+     * @param  $originalHeight
+     * @param  $originalSize
      */
     public function __construct($originalWidth, $originalHeight, $originalSize)
     {

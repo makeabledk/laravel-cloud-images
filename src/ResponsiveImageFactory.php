@@ -38,8 +38,8 @@ class ResponsiveImageFactory implements Arrayable, JsonSerializable
     }
 
     /**
-     * @param $name
-     * @param $arguments
+     * @param  $name
+     * @param  $arguments
      * @return mixed
      */
     public function __call($name, $arguments)
@@ -129,7 +129,7 @@ class ResponsiveImageFactory implements Arrayable, JsonSerializable
     }
 
     /**
-     * @param $fullDimensions
+     * @param  $fullDimensions
      * @return Collection
      */
     protected function calculateResponsiveDimensions($fullDimensions)

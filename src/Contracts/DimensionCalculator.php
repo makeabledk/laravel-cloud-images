@@ -7,9 +7,9 @@ use Illuminate\Support\Collection;
 interface DimensionCalculator
 {
     /**
-     * @param $originalWidth
-     * @param $originalHeight
-     * @param $originalSize
+     * @param  $originalWidth
+     * @param  $originalHeight
+     * @param  $originalSize
      */
     public function __construct($originalWidth, $originalHeight, $originalSize);
 

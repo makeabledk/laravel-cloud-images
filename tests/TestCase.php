@@ -96,7 +96,7 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase
     }
 
     /**
-     * @param $mb
+     * @param  $mb
      * @return int
      */
     protected function mb($mb)
@@ -105,8 +105,8 @@ class TestCase extends \Illuminate\Foundation\Testing\TestCase
     }
 
     /**
-     * @param $x
-     * @param $y
+     * @param  $x
+     * @param  $y
      * @return float|int
      */
     protected function area($x, $y)

@@ -30,9 +30,9 @@ class Client
     /**
      * Client constructor.
      *
-     * @param $diskName string
-     * @param $endpoint string
-     * @param $guzzle
+     * @param  $diskName  string
+     * @param  $endpoint  string
+     * @param  $guzzle
      */
     public function __construct($diskName, $endpoint, $guzzle)
     {
@@ -42,7 +42,7 @@ class Client
     }
 
     /**
-     * @param $path
+     * @param  $path
      * @return bool
      *
      * @throws FailedDeletionException

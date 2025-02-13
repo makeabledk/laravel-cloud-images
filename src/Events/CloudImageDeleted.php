@@ -17,7 +17,7 @@ class CloudImageDeleted
     /**
      * CloudImageUploaded constructor.
      *
-     * @param $path
+     * @param  $path
      */
     public function __construct($path)
     {
