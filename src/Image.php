@@ -82,7 +82,7 @@ class Image extends Model implements ResponsiveImage
     }
 
     /**
-     * @param $class
+     * @param  $class
      * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
     public function attachables($class)
@@ -140,7 +140,7 @@ class Image extends Model implements ResponsiveImage
     }
 
     /**
-     * @param $attachable
+     * @param  $attachable
      * @param  null  $tag
      * @return $this
      */

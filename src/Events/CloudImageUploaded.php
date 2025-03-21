@@ -23,8 +23,8 @@ class CloudImageUploaded
     /**
      * CloudImageUploaded constructor.
      *
-     * @param $path
-     * @param $url
+     * @param  $path
+     * @param  $url
      */
     public function __construct($path, $url)
     {

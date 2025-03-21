@@ -40,8 +40,8 @@ trait HasDimensions
      * image. This way we can calculate a 'max dimension' to an actual
      * set of width and height. Defaults to original dimensions.
      *
-     * @param $originalWidth
-     * @param $originalHeight
+     * @param  $originalWidth
+     * @param  $originalHeight
      * @return array
      */
     public function getNormalizedDimensions($originalWidth, $originalHeight)
@@ -72,7 +72,7 @@ trait HasDimensions
     }
 
     /**
-     * @param $width
+     * @param  $width
      * @param  null  $height
      * @return $this
      */
