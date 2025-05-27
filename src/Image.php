@@ -61,12 +61,15 @@ class Image extends Model implements ResponsiveImage
     public static function upload($file, $path = null, $visibility = null)
     {
         $uploaded = resolve(Client::class)->upload($file, $path, $visibility);
-
+        // Attempt to get image dimensions from the uploaded image. However,
+        // not all filetype are supported, HEIC included. If false, we'll
+        // try to get the image dimensions from the uploaded image instead.
+        $dim = getimagesize($file) ?: getimagesize($uploaded->url.'=s0');
         $image = new static([
             'path' => $uploaded->path,
             'url' => $uploaded->url,
             'size' => $file->getSize(),
-            'width' => Arr::get($dim = getimagesize($file), 0),
+            'width' => Arr::get($dim, 0),
             'height' => Arr::get($dim, 1),
         ]);
 
