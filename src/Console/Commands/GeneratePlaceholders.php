@@ -4,31 +4,18 @@ namespace Makeable\CloudImages\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
 use Makeable\CloudImages\Image;
 
 class GeneratePlaceholders extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'cloud-images:placeholders';
+    protected $signature = 'cloud-images:placeholders
+                            {--limit=1000 : Limit the number of images to process}
+                            {--offset= : Offset the starting point for processing}
+                            {--desc : Sort images in descending order by ID}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Regenerate all placeholders';
+    protected $description = 'Generate missing placeholders, dimensions and sizes for images';
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
-    public function handle()
+    public function handle(): void
     {
         if (! config('cloud-images.use_tiny_placeholders')) {
             $this->error('Placeholders are disabled in your config');
@@ -36,22 +23,34 @@ class GeneratePlaceholders extends Command
             return;
         }
 
-        Image::all()
-            ->tap(function (Collection $images) {
-                $this->comment('Preparing '.$images->count().' images...');
+        // Build query with options - only query images with missing data
+        $results = Image::query()
+            ->where(function ($query) {
+                $query->whereNull('width')
+                    ->orWhereNull('height')
+                    ->orWhereNull('size')
+                    ->orWhereNull('tiny_placeholder')
+                    ->orWhere('tiny_placeholder', '');
             })
-            ->chunk(50)
-            ->each(function (Collection $images) {
-                $this->comment('Generating '.$images->count().' placeholders...');
-                $images->each(function (Image $image) {
-                    $this->maybeUpgrade($image);
+            ->when($this->option('desc'), fn ($query) => $query->orderBy('id', 'desc'))
+            ->when($this->option('offset'), fn ($query, $offset) => $query->skip($offset))
+            ->when($this->option('limit'), fn ($query, $limit) => $query->take($limit))
+            ->get();
 
-                    $image->tiny_placeholder = $image->placeholder()->create();
-                    $image->save();
-                });
-            });
+        $this->comment("Found {$results->count()} images with missing data to process...");
 
-        $this->info('Finished generating placeholders');
+        $results->each(function (Image $image) {
+            $this->comment("Processing image #{$image->id}");
+            $this->maybeUpgrade($image);
+
+            if (empty($image->tiny_placeholder)) {
+                $image->tiny_placeholder = $image->placeholder()->create();
+            }
+
+            $image->save();
+        });
+
+        $this->info('Done');
     }
 
     /**
@@ -59,13 +58,16 @@ class GeneratePlaceholders extends Command
      *
      * @param  Image  $image
      */
-    protected function maybeUpgrade(Image $image)
+    protected function maybeUpgrade(Image $image): void
     {
-        if ($image->width === null) {
-            $original = $image->make()->original()->get();
-            $headers = array_change_key_case(get_headers($original, true));
+        $original = $image->make()->original()->get();
 
+        if ($image->size === null) {
+            $headers = array_change_key_case(get_headers($original, true));
             $image->size = $headers['content-length'];
+        }
+
+        if ($image->width === null) {
             $image->width = Arr::get($dim = getimagesize($original), 0);
             $image->height = Arr::get($dim, 1);
 

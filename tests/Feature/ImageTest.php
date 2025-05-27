@@ -7,6 +7,8 @@ use Illuminate\Http\File;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
+use Makeable\CloudImages\CloudImageFacade;
+use Makeable\CloudImages\Events\CloudImageUploaded;
 use Makeable\CloudImages\Image;
 use Makeable\CloudImages\Tests\TestCase;
 
@@ -85,5 +87,19 @@ class ImageTest extends TestCase
         $this->assertStringContainsString('srcset', $html = (string) $image);
         $this->assertStringContainsString('sizes', $html = (string) $image);
         $this->assertStringContainsString('onload', $html = (string) $image);
+    }
+
+    public function test_regression_it_fallbacks_to_getting_image_size_from_uploaded_url()
+    {
+        CloudImageFacade::expects('upload')->andReturn(new CloudImageUploaded(
+            'foo',
+            'https://lh3.googleusercontent.com/DxbPUYp4uPbPwI3iEZ8yOpdqfPRgW2hopFiZwMbl8IzBia2qvvC_9k2mLvbaVnr8ysMX0QQW84sSpvE8EXrRc4Hb'
+        ));
+
+        $image = Image::upload(new File(__FILE__)); // can't read image size on php file
+
+        // check image dimensions matches given url
+        $this->assertEquals(1950, $image->width);
+        $this->assertEquals(1300, $image->height);
     }
 }

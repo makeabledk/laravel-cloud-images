@@ -66,7 +66,7 @@ class Client
      * @param  \Illuminate\Http\File|\Illuminate\Http\UploadedFile  $image
      * @param  null  $path
      * @param  string  $visibility
-     * @return object
+     * @return CloudImageUploaded
      *
      * @throws FailedUploadException
      */
