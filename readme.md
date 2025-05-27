@@ -74,7 +74,7 @@ Easily upload a `\Illuminate\Http\File` or `\Illuminate\Http\UploadedFile` to yo
 $file = request()->file('image'); // assuming you uploaded a file through a form
 $uploaded = \CloudImage::upload($file); // filename will be a hash of the uploaded file
 $uploadedToPath = \CloudImage::upload($file, 'path/filename.jpg'); // optionally specify path and filename yourself
-        
+
 echo $uploaded->url; // imageserver url, eg: http://lh3.googleusercontent.com/...
 echo $uploaded->path; // path in bucket
 ```
@@ -271,7 +271,7 @@ Product::first()->image('featured')->replaceWith(Image::upload($file));
 class Product extends Eloquent
 {
     use \Makeable\CloudImages\HasImages;
-    
+
     public function setImageAttribute($file)
     {
         return $this->image()->replaceWith(Image::upload($file));
@@ -306,7 +306,7 @@ We may extend the `Image` model and use that on our `Product->images()` relation
 class Product extends Eloquent
 {
     use \Makeable\CloudImages\HasImages;
-    
+
     protected $useImageClass = ProductImage::class;
 }
 ```
@@ -338,7 +338,7 @@ Remember to add the sizes to `$appends` attribute if you want them available whe
 class ProductImage extends Image
 {
     protected $appends = ['square', 'wide'];
-    
+
     // ...
 }
 ```

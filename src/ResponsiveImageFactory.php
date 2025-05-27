@@ -31,7 +31,7 @@ class ResponsiveImageFactory implements Arrayable, JsonSerializable
      * @param  ResponsiveImage  $image
      * @param  ImageFactory|null  $factory
      */
-    public function __construct(ResponsiveImage $image, ImageFactory $factory = null)
+    public function __construct(ResponsiveImage $image, ?ImageFactory $factory = null)
     {
         $this->image = $image;
         $this->factory = $factory ?: $image->make();

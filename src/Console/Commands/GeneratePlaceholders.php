@@ -4,31 +4,18 @@ namespace Makeable\CloudImages\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
 use Makeable\CloudImages\Image;
 
 class GeneratePlaceholders extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'cloud-images:placeholders';
+    protected $signature = 'cloud-images:placeholders
+                            {--limit : Limit the number of images to process}
+                            {--offset= : Offset the starting point for processing}
+                            {--desc : Sort images in descending order by ID}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Regenerate all placeholders';
+    protected $description = 'Generate missing placeholders, dimensions and sizes for images';
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
-    public function handle()
+    public function handle(): void
     {
         if (! config('cloud-images.use_tiny_placeholders')) {
             $this->error('Placeholders are disabled in your config');
@@ -36,22 +23,68 @@ class GeneratePlaceholders extends Command
             return;
         }
 
-        Image::all()
-            ->tap(function (Collection $images) {
-                $this->comment('Preparing '.$images->count().' images...');
-            })
-            ->chunk(50)
-            ->each(function (Collection $images) {
-                $this->comment('Generating '.$images->count().' placeholders...');
-                $images->each(function (Image $image) {
-                    $this->maybeUpgrade($image);
+        $limit = $this->option('limit');
+        $offset = (int) $this->option('offset') ?: 0;
+        $chunkSize = 50;
+        $processed = 0;
 
+        $this->info('Starting to process images'
+            .($offset ? " from offset {$offset}" : '')
+            .($limit ? " (up to {$limit} total)" : '')
+            ." in chunks of {$chunkSize}.");
+
+        while (true) {
+            // How many we still need this round
+            $take = $limit > 0
+                ? min($chunkSize, $limit - $processed)
+                : $chunkSize;
+
+            // If we've hit the limit, break out
+            if ($take <= 0) {
+                break;
+            }
+
+            // Build the base query for this chunk
+            $query = Image::query()
+                ->where(function ($q) {
+                    $q->whereNull('width')
+                        ->orWhereNull('height')
+                        ->orWhereNull('size')
+                        ->orWhereNull('tiny_placeholder')
+                        ->orWhere('tiny_placeholder', '');
+                })
+                ->when($this->option('desc'), fn ($q) => $q->orderBy('id', 'desc'))
+                ->skip($offset + $processed)
+                ->take($take);
+
+            $images = $query->get();
+
+            if ($images->isEmpty()) {
+                break;
+            }
+
+            $this->comment(sprintf(
+                'Processing chunk: images %d–%d (got %d)…',
+                $offset + $processed + 1,
+                $offset + $processed + $images->count(),
+                $images->count()
+            ));
+
+            $images->each(function (Image $image) {
+                $this->comment("  • #{$image->id}");
+                $this->maybeUpgrade($image);
+
+                if (empty($image->tiny_placeholder)) {
                     $image->tiny_placeholder = $image->placeholder()->create();
-                    $image->save();
-                });
+                }
+
+                $image->save();
             });
 
-        $this->info('Finished generating placeholders');
+            $processed += $images->count();
+        }
+
+        $this->info("Done: processed {$processed} image(s).");
     }
 
     /**
@@ -59,17 +92,21 @@ class GeneratePlaceholders extends Command
      *
      * @param  Image  $image
      */
-    protected function maybeUpgrade(Image $image)
+    protected function maybeUpgrade(Image $image): void
     {
-        if ($image->width === null) {
-            $original = $image->make()->original()->get();
-            $headers = array_change_key_case(get_headers($original, true));
+        $original = $image->make()->original()->get();
 
+        if ($image->size === null) {
+            $headers = array_change_key_case(get_headers($original, true));
             $image->size = $headers['content-length'];
-            $image->width = Arr::get($dim = getimagesize($original), 0);
+        }
+
+        if ($image->width === null) {
+            $dim = getimagesize($original);
+            $image->width = Arr::get($dim, 0);
             $image->height = Arr::get($dim, 1);
 
-            $this->comment("Upgraded image {$image->id} - fetched dimensions");
+            $this->comment("  › Upgraded #{$image->id} — fetched dimensions");
         }
     }
 }
