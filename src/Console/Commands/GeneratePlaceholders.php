@@ -19,6 +19,7 @@ class GeneratePlaceholders extends Command
     {
         if (! config('cloud-images.use_tiny_placeholders')) {
             $this->error('Placeholders are disabled in your config');
+
             return;
         }
 
@@ -27,10 +28,10 @@ class GeneratePlaceholders extends Command
         $chunkSize = 50;
         $processed = 0;
 
-        $this->info("Starting to process images"
-            . ($offset ? " from offset {$offset}" : '')
-            . ($limit  ? " (up to {$limit} total)" : '')
-            . " in chunks of {$chunkSize}.");
+        $this->info('Starting to process images'
+            .($offset ? " from offset {$offset}" : '')
+            .($limit ? " (up to {$limit} total)" : '')
+            ." in chunks of {$chunkSize}.");
 
         while (true) {
             // How many we still need this round
@@ -52,7 +53,7 @@ class GeneratePlaceholders extends Command
                         ->orWhereNull('tiny_placeholder')
                         ->orWhere('tiny_placeholder', '');
                 })
-                ->when($this->option('desc'), fn($q) => $q->orderBy('id', 'desc'))
+                ->when($this->option('desc'), fn ($q) => $q->orderBy('id', 'desc'))
                 ->skip($offset + $processed)
                 ->take($take);
 
@@ -102,7 +103,7 @@ class GeneratePlaceholders extends Command
 
         if ($image->width === null) {
             $dim = getimagesize($original);
-            $image->width  = Arr::get($dim, 0);
+            $image->width = Arr::get($dim, 0);
             $image->height = Arr::get($dim, 1);
 
             $this->comment("  › Upgraded #{$image->id} — fetched dimensions");

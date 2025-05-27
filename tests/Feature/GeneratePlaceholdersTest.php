@@ -52,7 +52,7 @@ class GeneratePlaceholdersTest extends TestCase
             'width' => 1200,
             'height' => 800,
             'size' => 2 * 1024 * 1024,
-            'tiny_placeholder' => 'data:image/jpeg;base64,testbase64data'
+            'tiny_placeholder' => 'data:image/jpeg;base64,testbase64data',
         ]);
 
         // Run the command
@@ -91,7 +91,7 @@ class GeneratePlaceholdersTest extends TestCase
         // Run the command with limit=2 and offset=1
         Artisan::call('cloud-images:placeholders', [
             '--limit' => 2,
-            '--offset' => 1
+            '--offset' => 1,
         ]);
 
         // Get all images
@@ -125,7 +125,7 @@ class GeneratePlaceholdersTest extends TestCase
         // Run the command with desc and limit=1
         Artisan::call('cloud-images:placeholders', [
             '--desc' => true,
-            '--limit' => 1
+            '--limit' => 1,
         ]);
 
         // Get all images
