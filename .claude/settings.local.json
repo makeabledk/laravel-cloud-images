@@ -1,0 +1,11 @@
+{
+    "enableAllProjectMcpServers": false,
+    "permissions": {
+        "allow": [
+            "Bash(./vendor/bin/phpunit --migrate-configuration)",
+            "Bash(./vendor/bin/phpunit)",
+            "Bash(./vendor/bin/phpunit:*)"
+        ],
+        "deny": []
+    }
+}
