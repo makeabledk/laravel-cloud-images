@@ -41,7 +41,7 @@ class FileSizeOptimizedDimensionCalculator implements DimensionCalculator
             $newWidth = (int) floor(sqrt(($predictedFileSize / $this->pixelPrice) / $ratio));
             $newHeight = (int) floor($newWidth * $ratio);
 
-            if ($this->finishedCalculating($predictedFileSize, $newWidth)) {
+            if ($this->finishedCalculating(round($predictedFileSize), $newWidth)) {
                 return $targetSizes;
             }
 
